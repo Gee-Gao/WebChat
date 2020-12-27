@@ -45,6 +45,13 @@
 		<script src="../js/mui.js"></script>
 		<script type="text/javascript">
 			mui.init()
+
+			document.getElementById("login").addEventListener("tap",function(){
+				mui.openWindow({
+					url:"login.html",
+					id:"login"
+				})
+			})
 		</script>
 	</body>
 </html>
