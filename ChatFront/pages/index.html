@@ -5,17 +5,104 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/header.css" rel="stylesheet" />
+		<link href="../fontico/iconfont.css" rel="stylesheet" />
+		<style>
+			html{
+				touch-action: none;
+			}
+		</style>
 	</head>
 
 	<body>
-		.<header class="mui-bar mui-bar-nav">
-		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		<h1 class="mui-title">标题</h1>
-	</header>
+		<!-- 标题栏 -->
+		<header class="mui-bar mui-bar-nav title">
+			<h1 class="mui-title title-color">" 麻 雀 " 聊 天</h1>
+		</header>
+		<!-- 主体部分 -->
+		<div class="mui-content">
+
+		</div>
+		<!-- 底部选项卡 -->
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" tabindex="0">
+				<span class="mui-icon iconfont icon-xiaoniao"></span>
+				<span class="mui-tab-label">麻雀</span>
+			</a>
+			<a class="mui-tab-item" tabindex="1">
+				<span class="mui-icon iconfont icon-tongxunlu"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+			<a class="mui-tab-item" tabindex="2">
+				<span class="mui-icon iconfont icon-faxian"></span>
+				<span class="mui-tab-label">发现</span>
+			</a>
+			<a class="mui-tab-item" tabindex="3">
+				<span class="mui-icon mui-icon-person"></span>
+				<span class="mui-tab-label">我</span>
+			</a>
+		</nav>
 
 		<script src="../js/mui.js"></script>
 		<script type="text/javascript">
 			mui.init();
+			//定义用于存储选项卡页面的数组
+			var subPages = [{
+				pageId: "bird-chatlist.html",
+				pageUrl: "bird-chatlist.html"
+			},
+				{
+					pageId: "bird-contact.html",
+					pageUrl: "bird-contact.html"
+				},
+				{
+					pageId: "bird-discover.html",
+					pageUrl: "bird-discover.html"
+				},
+				{
+					pageId: "bird-me.html",
+					pageUrl: "bird-me.html"
+				}
+			];
+
+			//设置页面打开的样式
+			var pageStyle = {
+				top: "0px",
+				bottom: "50px"
+			};
+
+			mui.plusReady(function() {
+				//设置系统状态栏背景颜色
+				plus.navigator.setStatusBarBackground("#ff4316");
+				//设置系统字体颜色
+				plus.navigator.setStatusBarStyle("light");
+
+				//获取当前的webview对象
+				var indexWebview = plus.webview.currentWebview();
+				//将数组中的页面循环向当前主页webview 追加子页的4个webview对象
+				for (var i = 0; i < subPages.length; i++) {
+					//将每次循环产生的页面信息创建为webview窗口对象
+					var wv = plus.webview.create(subPages[i].pageUrl, subPages[i].pageId, pageStyle);
+					//隐藏
+					wv.hide();
+					//追加子窗口对象至主窗口对象中
+					indexWebview.append(wv);
+				}
+				//设置默认窗口页面
+				plus.webview.show(subPages[0].pageId);
+				//批量绑定tab事件
+				mui(".mui-bar-tab").on("tap", "a", function() {
+					var tabindex = this.getAttribute("tabindex");
+					//显示点击的tab选项卡所对应的页面
+					plus.webview.show(subPages[tabindex].pageId, "fade-in", 200);
+					//隐藏不需要的页面
+					for (var i = 0; i < subPages.length; i++) {
+						if (i != tabindex) {
+							plus.webview.hide(subPages[i].pageId, "fade-out", 200);
+						}
+					}
+				});
+			})
 		</script>
 	</body>
 </html>
