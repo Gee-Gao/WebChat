@@ -1,123 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
         <title></title>
-        <meta name="viewport"
-              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
-        <link href="../css/mui.css" rel="stylesheet"/>
-
-        <style type="text/css">
-            body {
-                background-color: white;
+        <link rel="stylesheet" type="text/css" href="../css/registLogin/util.css">
+        <link rel="stylesheet" type="text/css" href="../css/registLogin/main.css">
+        <style>
+            .p-t-85 {
+                padding-top: 10px;
             }
 
-            .mui-input-row {
-                height: 60px;
-                padding: 8px 0;
+            .p-b-70 {
+                padding-bottom: 35px;
             }
 
-            .mui-input-group label {
-                width: 22%;
+            .m-t-85 {
+                margin-top: 15px;
             }
 
-            .mui-input-row label ~ input
-            .mui-input-row label ~ select
-            .mui-input-row label ~ textarea {
-                width: 80%;
+            .container-login100 {
+                padding: 25px;
+            }
+            /*toast信息提示*/
+
+            .mui-toast-container {
+                bottom: 50% !important;
+            }
+            .mui-toast-message {
+                opacity: 0.6;
+                color: #fff;
+                width: 180px;
+                padding: 70px 5px 10px 5px;
             }
         </style>
     </head>
 
     <body>
-
-        <header class="mui-bar mui-bar-nav">
-            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-            <h1 class="mui-title">登录/注册</h1>
-        </header>
-
         <div class="mui-content">
-            <form class="mui-input-group">
-                <div class="mui-input-row">
-                    <label for="username">账号:</label>
-                    <input type="text" id="username" name="username" class="mui-input-clear mui-input"
-                           placeholder="请输入账号"/>
-                </div>
+            <div class="container-login100">
+                <div class="wrap-login100 p-t-85 p-b-20">
+                    <form id="userform">
+						<span class="login100-form-title p-b-70">
+							<h5>" 麻 雀 " 聊 天</h5>
+						</span>
+                        <span class="login100-form-avatar">
+							<img id="img_login_face" src="../css/registLogin/arrow.jpg" alt="gary">
+						</span>
 
-                <div class="mui-input-row">
-                    <label for="password">密码:</label>
-                    <input type="password" id="password" name="password" class="mui-input-clear mui-input"
-                           placeholder="请输入密码"/>
-                </div>
+                        <div class="wrap-input100 validate-input m-t-85 m-b-35">
+                            <input class="input100" type="text" id="username" name="username" placeholder="用户名">
+                            <span class="focus-input100"></span>
+                        </div>
 
-                <div class="mui-content-padded">
-                    <button type="button" class="mui-btn mui-btn-green mui-btn-block">登录/注册</button>
+                        <div class="wrap-input100 validate-input m-b-50">
+                            <input class="input100" type="password" id="password" name="password" placeholder="密码">
+                            <span class="focus-input100"></span>
+                        </div>
+                        <div class="container-login100-form-btn" >
+                            <button type="submit"  class="login100-form-btn" style="background-color: #FF4136;">
+                                登录/注册
+                            </button>
+                        </div>
+                    </form>
+
                 </div>
-            </form>
+            </div>
         </div>
-
-        <script src="../js/mui.js"></script>
-        <script src="../js/app.js"></script>
-        <script type="text/javascript">
+        <script type="text/javascript" src="../js/app.js" ></script>
+        <script type="text/javascript" src="../js/mui.js" ></script>
+        <script type="text/javascript" charset="utf-8">
             mui.init();
-
             mui.plusReady(function () {
-                plus.navigator.setStatusBarBackground("#2c2c2c")
-            });
-
-            mui(document.body).on("tap", ".mui-btn", function () {
-                ajaxregOrlogin();
-            });
-
-            function ajaxregOrlogin() {
-                //获取登录的用户名和密码
-                var username = document.getElementById("username");
-                var password = document.getElementById("password");
-                //判断用户名是否为空，如果为空获得焦点
-                if (!app.isNotNull(username.value)) {
-                    username.focus();
-                } else if (!app.isNotNull(password.value)) {
-                    password.focus();
-                } else {
-                    //判断用户名和密码的合法性
-                    if (username.value.length > 12) {
-                        app.showToast("用户名不能超过12位", "error");
-                        return false;
-                    } else if (password.value.length > 12) {
-                        app.showToast("密码不能超过12位", "error");
-                        return false;
-                    }
-                    mui(".mui-btn").button("loading");
-                    mui.ajax(app.serverUrl + "/user/registerOrLogin", {
-                        data: {
-                            username: username.value,
-                            password: password.value
-                        },
-                        type: 'post',
-                        timeout: 5000,//单位毫秒
-                        success: function (data) {
-                            if (data.status == 200) {
-                                localStorage.setItem("user", "(" + data + ")")
-                                mui.openWindow({
-                                    url: 'my.html',
-                                    id: 'my'
-                                })
-                            } else {
-                                mui(".mui-btn-green").button("reset");//取消loading效果
-                                mui.toast(data.msg)//弹出错误信息
-                            }
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            mui(".mui-btn-green").button("reset");
-                            if (textStatus == 'timeout') {
-                                mui.toast("连接超时");
-                            } else if (textStatus == 'eror') {
-                                mui.toast("连接错误");
-                            }
-                        }
-                    })
+                // 判断用户是否注册登录过，如果本地内存有全局的用户对象，此时直接跳转到首页
+                var userInfo = app.getUserGlobalInfo();
+                if (userInfo != null) {
+                    // 页面跳转
+                    mui.openWindow("index.html", "index.html");
                 }
-            }
+
+                var userform = document.getElementById("userform");//获取表单对象
+                var username = document.getElementById("username");//用户名
+                var password = document.getElementById("password");//密码
+
+                userform.addEventListener("submit",function(e){
+                    // 判断用户名是否为空，如果为空则让其获得焦点
+                    if (!app.isNotNull(username.value)) {
+                        app.showToast("请输入用户名","error");
+                        // 获取焦点
+                        username.focus();
+                    } else if (!app.isNotNull(password.value)) {
+                        app.showToast("请输入密码","error");
+                        // 获取焦点
+                        password.focus();
+                    } else {
+                        // 判断用户名和密码的长度，进行限制
+                        if (username.value.length > 12) {
+                            app.showToast("用户名不能超过12位", "error");
+                            return false;
+                        } else if (password.value.length > 12) {
+                            app.showToast("密码不能超过12位", "error");
+                            return false;
+                        }
+                        //获取每台设备上的唯一cid
+                        var cid = plus.push.getClientInfo().clientid;
+                        mui.ajax(app.serverUrl+'/user/registerOrLogin',{//使用之前所存入的ip来进行通信
+                            data:{
+                                username: username.value,
+                                password: password.value,
+                                cid:cid
+                            },
+                            type:'post',//HTTP请求类型
+                            timeout:5000,//超时时间设置为10秒；
+                            success:function(data){
+                                if(data.status==200){//若服务器中成功返回了非空的数据,则表明了账户与密码验证已经成功
+                                    var userInfo = data.data;//获取json对象中的用户对象
+                                    app.setUserGlobalInfo(userInfo);
+                                    mui.openWindow({url:'index.html',id:'index'});
+                                }else{//服务器返回的数据为空,表明账户与密码验证失败
+                                    app.showToast(data.msg,"error");//弹出错误信息
+                                }
+                            },
+                            error:function(XMLHttpRequest, textStatus, errorThrown){
+                                mui(".mui-btn-green").button('reset');//取消loading效果
+                                if(textStatus=="timeout"){
+                                    mui.toast("连接超时");//超过十秒报错
+                                }else if(textStatus=="error"){
+                                    mui.toast("连接出错");
+                                }
+                            }
+                        });
+                    }
+                    //防止默认时间，防止默认表单提交
+                    e.preventDefault();
+                });
+            });
         </script>
     </body>
 </html>
