@@ -1,116 +1,123 @@
 <!doctype html>
 <html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <link href="../css/mui.css" rel="stylesheet"/>
 
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.css" rel="stylesheet" />
-		
-		<style type="text/css">
-			body{
-				background-color:white ;
-			}
-			
-			.mui-input-row{
-				height: 60px;
-				padding: 8px 0;
-			}
-			
-			.mui-input-group label{
-				width: 22%;
-			}
-			
-			.mui-input-row label~input
-			.mui-input-row label~select
-			.mui-input-row label~textarea{
-				width: 80%;
-			}
-			
-		</style>
-	</head>
+        <style type="text/css">
+            body {
+                background-color: white;
+            }
 
-	<body>
-		
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">登录/注册</h1>
-		</header>
-		
-		<div class="mui-content">
-			<form class="mui-input-group">
-				<div class="mui-input-row">
-					<label for="username">账号:</label>
-					<input type="text" id="username" name="username" class="mui-input-clear mui-input" placeholder="请输入账号"/>
-				</div>
-				
-				<div class="mui-input-row">
-					<label for="password">密码:</label>
-					<input type="password" id="password" name="password" class="mui-input-clear mui-input" placeholder="请输入密码"/>
-				</div>
-				
-				<div class="mui-content-padded">
-					<button type="button" class="mui-btn mui-btn-green mui-btn-block">登录/注册</button>
-				</div>
-			</form>
-			
-		</div>
-		
-		
-		<script src="../js/mui.js"></script>
-		<script src="../js/app.js"></script>
-		<script type="text/javascript">
-			mui.init();
-			
-			mui.plusReady(function(){
-				plus.navigator.setStatusBarBackground("#2c2c2c")
-			});
-			
-			mui(document.body).on("tap",".mui-btn",function(){
-				ajaxregOrlogin();
-			});
-			
-			function ajaxregOrlogin(){
-				//获取登录的用户名和密码
-				var username = document.getElementById("username");
-				var password = document.getElementById("password");
-				//判断用户名是否为空，如果为空获得焦点
-				if(!app.isNotNull(username.value)){
-					username.focus();
-				}else if(!app.isNotNull(password.value)){
-					password.focus();
-				}else{
-					//判断用户名和密码的合法性
-					if(username.value.length > 12){
-						app.showToast("用户名不能超过12位","error");
-						return false;
-					}else if(password.value.length > 12){
-						app.showToast("密码不能超过12位","error");
-						return false;
-					}
-					mui(".mui-btn").button("loading");
-					mui.ajax(app.serverUrl+"user/registerOrLogin",{
-						data:{
-							username:username.value,
-							password:password.value
-						},
-						type:'post',
-						timeout:5000,//单位毫秒
-						success:function(data){
-							console.log(JSON.stringify(data));
-						},
-						error:function(XMLHttpRequest,textStatus,errorThrown){
-							mui(".mui-btn-green").button("reset");
-							if(textStatus == 'timeout'){
-								mui.toast("连接超时");
-							}else if(textStatus == 'eror'){
-								mui.toast("连接错误");
-							}
-						}
-					})
-				}
-			}
-		</script>
-	</body>
+            .mui-input-row {
+                height: 60px;
+                padding: 8px 0;
+            }
 
+            .mui-input-group label {
+                width: 22%;
+            }
+
+            .mui-input-row label ~ input
+            .mui-input-row label ~ select
+            .mui-input-row label ~ textarea {
+                width: 80%;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <header class="mui-bar mui-bar-nav">
+            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+            <h1 class="mui-title">登录/注册</h1>
+        </header>
+
+        <div class="mui-content">
+            <form class="mui-input-group">
+                <div class="mui-input-row">
+                    <label for="username">账号:</label>
+                    <input type="text" id="username" name="username" class="mui-input-clear mui-input"
+                           placeholder="请输入账号"/>
+                </div>
+
+                <div class="mui-input-row">
+                    <label for="password">密码:</label>
+                    <input type="password" id="password" name="password" class="mui-input-clear mui-input"
+                           placeholder="请输入密码"/>
+                </div>
+
+                <div class="mui-content-padded">
+                    <button type="button" class="mui-btn mui-btn-green mui-btn-block">登录/注册</button>
+                </div>
+            </form>
+        </div>
+
+        <script src="../js/mui.js"></script>
+        <script src="../js/app.js"></script>
+        <script type="text/javascript">
+            mui.init();
+
+            mui.plusReady(function () {
+                plus.navigator.setStatusBarBackground("#2c2c2c")
+            });
+
+            mui(document.body).on("tap", ".mui-btn", function () {
+                ajaxregOrlogin();
+            });
+
+            function ajaxregOrlogin() {
+                //获取登录的用户名和密码
+                var username = document.getElementById("username");
+                var password = document.getElementById("password");
+                //判断用户名是否为空，如果为空获得焦点
+                if (!app.isNotNull(username.value)) {
+                    username.focus();
+                } else if (!app.isNotNull(password.value)) {
+                    password.focus();
+                } else {
+                    //判断用户名和密码的合法性
+                    if (username.value.length > 12) {
+                        app.showToast("用户名不能超过12位", "error");
+                        return false;
+                    } else if (password.value.length > 12) {
+                        app.showToast("密码不能超过12位", "error");
+                        return false;
+                    }
+                    mui(".mui-btn").button("loading");
+                    mui.ajax(app.serverUrl + "/user/registerOrLogin", {
+                        data: {
+                            username: username.value,
+                            password: password.value
+                        },
+                        type: 'post',
+                        timeout: 5000,//单位毫秒
+                        success: function (data) {
+                            if (data.status == 200) {
+                                localStorage.setItem("user", "(" + data + ")")
+                                mui.openWindow({
+                                    url: 'my.html',
+                                    id: 'my'
+                                })
+                            } else {
+                                mui(".mui-btn-green").button("reset");//取消loading效果
+                                mui.toast(data.msg)//弹出错误信息
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            mui(".mui-btn-green").button("reset");
+                            if (textStatus == 'timeout') {
+                                mui.toast("连接超时");
+                            } else if (textStatus == 'eror') {
+                                mui.toast("连接错误");
+                            }
+                        }
+                    })
+                }
+            }
+        </script>
+    </body>
 </html>
