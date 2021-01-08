@@ -23,6 +23,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUserInfo(User user) {
+        userMapper.updateByPrimaryKeySelective(user);
+        return userMapper.selectByPrimaryKey(user.getId());
+    }
+
+    @Override
     public User insert(User user) {
         user.setId(sid.nextShort());
         userMapper.insert(user);

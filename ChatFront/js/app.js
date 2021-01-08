@@ -13,7 +13,7 @@ window.app = {
 	/**
 	 * 图片服务器的url地址
 	 */
-	imgServerUrl: 'http://101.200.79.231:88/wdzl/',
+	imgServerUrl: 'http://39.106.167.46:80/',
 	
 	/**
 	 * 判断字符串是否为空

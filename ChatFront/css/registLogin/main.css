@@ -282,6 +282,12 @@ iframe {
   font-size: 18px;
   color: #fff;
   line-height: 1.2;
+
+  /*display: -webkit-box;*/
+  /*display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;*/
+  /*display: flex;*/
   justify-content: center;
   align-items: center;
   padding: 0 20px;
@@ -289,7 +295,8 @@ iframe {
   height: 50px;
   background-color: #FF4136;
   border-radius: 25px;
-  box-shadow: 0 10px 30px 0px;
+
+  box-shadow: 0 10px 30px 0px ;
   -moz-box-shadow: 0 10px 30px 0px rgba(255, 20, 10, 0.5);
   -webkit-box-shadow: 0 10px 30px 0px rgba(255, 20, 10, 0.5);
   -o-box-shadow: 0 10px 30px 0px rgba(255, 20, 10, 0.5);

@@ -94,11 +94,11 @@
 				mui(".mui-bar-tab").on("tap", "a", function() {
 					var tabindex = this.getAttribute("tabindex");
 					//显示点击的tab选项卡所对应的页面
-					plus.webview.show(subPages[tabindex].pageId, "fade-in", 200);
+					plus.webview.show(subPages[tabindex].pageId, "fade-in", 20);
 					//隐藏不需要的页面
 					for (var i = 0; i < subPages.length; i++) {
 						if (i != tabindex) {
-							plus.webview.hide(subPages[i].pageId, "fade-out", 200);
+							plus.webview.hide(subPages[i].pageId, "fade-out", 20);
 						}
 					}
 				});

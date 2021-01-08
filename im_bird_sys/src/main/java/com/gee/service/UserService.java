@@ -7,4 +7,6 @@ public interface UserService {
     User queryUserNameIsExit(String username);
 
     User insert(User user);
+
+    User updateUserInfo(User user);
 }
