@@ -56,9 +56,7 @@
 				//获取需要动态展示内容的组件对象
 				var img_my_qrcode = document.getElementById("img_my_qrcode");
 				if (app.isNotNull(qrcode)) {
-					console.log(app.imgServerUrl + qrcode);
 					img_my_qrcode.src = app.imgServerUrl + qrcode;
-					console.log(img_my_qrcode.src);
 				}
 
 				var img_myface = document.getElementById("img_myface");
@@ -82,18 +80,18 @@
 				link_download_qrcode.addEventListener("tap", function() {
 					plus.nativeUI.showWaiting("下载中...");
 					var dtask = plus.downloader.createDownload(
-						app.imgServerUrl + qrcode, {},
-						function(d, status) {
-							if (status == 200) {
-								plus.nativeUI.closeWaiting();
-								plus.gallery.save(d.filename, function() {
-									app.showToast("保存图片到相册成功", "success");
-								});
+							app.imgServerUrl + qrcode, {},
+							function(d, status) {
+								if (status == 200) {
+									plus.nativeUI.closeWaiting();
+									plus.gallery.save(d.filename, function() {
+										app.showToast("保存图片到相册成功", "success");
+									});
 
-							} else {
-								plus.nativeUI.closeWaiting();
-							}
-						});
+								} else {
+									plus.nativeUI.closeWaiting();
+								}
+							});
 					dtask.start();
 				});
 			});
