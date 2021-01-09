@@ -9,4 +9,10 @@ public interface UserService {
     User insert(User user);
 
     User updateUserInfo(User user);
+
+    //搜索好友前置条件
+    Integer preconditionSearchFriend(String myUserId, String friendUserName);
+
+    //发送好友请求
+    void sendFriendRequest(String myUserId, String friendUserName);
 }

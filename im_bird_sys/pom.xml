@@ -58,7 +58,11 @@
             <artifactId>fastdfs-client</artifactId>
             <version>1.27.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <version>1.2.4</version>
+        </dependency>
         <!--用于摘要运算、编码解码的包。常见的编码解码工具Base64、MD5、Hex、SHA1、DES等-->
         <dependency>
             <groupId>commons-codec</groupId>

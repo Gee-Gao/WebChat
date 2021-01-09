@@ -13,16 +13,59 @@
 		<header class="mui-bar mui-bar-nav title">
 			<h1 class="mui-title title-color">发现</h1>
 		</header>
-		
+
 		<!-- 主体部分 -->
 		<div class="mui-content">
-			发现
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../images/friends.png" style="max-width: 25px; height: 25px;">
+						<p class="mui-ellipsis" style="line-height: 24px; font-size: 14px; color: #000000;">
+							<span style="margin-left: 10px;">朋友圈</span>
+						</p>
+					</a>
+				</li>
+			</ul>
+		
+			<ul class="mui-table-view" style="margin-top: 10px;">
+				<li id="li_add_frends" class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../images/addfriends.png" style="max-width: 25px; height: 25px;">
+						<p class="mui-ellipsis" style="line-height: 24px; font-size: 14px; color: #000000;">
+							<span style="margin-left: 10px;">添加好友</span>
+						</p>
+					</a>
+				</li>
+				
+				<li id="li_scanme" class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../images/scanscan.png" style="max-width: 25px; height: 25px;">
+						<p class="mui-ellipsis" style="line-height: 24px; font-size: 14px; color: #000000;">
+							<span style="margin-left: 10px;">扫一扫</span>
+						</p>
+					</a>
+				</li>
+			</ul>
 		</div>
-		
-		
+
+
 		<script src="../js/mui.js"></script>
 		<script type="text/javascript">
-			mui.init()
+			mui.init();
+
+			mui.plusReady(function () {
+			    //添加好友
+				var li_add_frends = document.getElementById("li_add_frends");
+				li_add_frends.addEventListener("tap",function(){
+					mui.openWindow("searchFriends.html","searchFriends.html")
+				});
+				
+				//扫一扫
+				var li_scanme = document.getElementById("li_scanme");
+				li_scanme.addEventListener("tap",function(){
+					mui.openWindow("scanme.html","scanme.html")
+				});
+			});
 		</script>
 	</body>
 </html>
