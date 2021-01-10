@@ -4,6 +4,7 @@ import com.gee.enums.SearchFriendsStatusEnum;
 import com.gee.mapper.FriendsRequestMapper;
 import com.gee.mapper.MyFriendsMapper;
 import com.gee.mapper.UserMapper;
+import com.gee.mapper.UserMapperCustom;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
@@ -12,12 +13,14 @@ import com.gee.utils.FastDFSClient;
 import com.gee.utils.FileUtils;
 import com.gee.utils.QRCodeUtils;
 import com.gee.utils.Sid;
+import com.gee.vo.FriendsRequestVo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +36,9 @@ public class UserServiceImpl implements UserService {
     private Sid sid;
     @Resource
     private FriendsRequestMapper friendsRequestMapper;
+    @Resource
+    private UserMapperCustom userMapperCustom;
+
 
     //根据用户名判断用户是否存在
     @Override
@@ -85,11 +91,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //查询添加好友请求列表
+    @Override
+    public List<FriendsRequestVo> queryFriendRequestList(String acceptUserId) {
+        return userMapperCustom.queryFriendRequestList(acceptUserId);
+    }
+
     @Override
     public User insert(User user) {
         user.setId(sid.nextShort());
         //为每一个用户生成唯一二维码
-        String qrCodePath = "D:/user" + user.getId() + "qrcode.png";
+        String qrCodePath = "D:/qrcode/user" + user.getId() + "qrcode.png";
         qrCodeUtils.createQRCode(qrCodePath, "bird_qrcode:" + user.getUsername());
         MultipartFile qrcodeFile = FileUtils.fileToMultipart(qrCodePath);
         String qrcodeUrl = null;

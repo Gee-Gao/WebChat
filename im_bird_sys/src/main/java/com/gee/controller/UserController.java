@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/user")
@@ -23,6 +24,12 @@ public class UserController {
     private UserService userService;
     @Resource
     private FastDFSClient fastDFSClient;
+
+    //查询添加好友请求列表
+    @GetMapping("queryFriendsRequest")
+    public IWdzlJSONResult queryFriendsRequest(String userId) {
+        return IWdzlJSONResult.ok(userService.queryFriendRequestList(userId));
+    }
 
     //发送好友请求
     @GetMapping("addFriendRequest")
@@ -111,7 +118,14 @@ public class UserController {
                 return IWdzlJSONResult.errorMsg("密码不正确");
             }
         } else { //用户不存在
-            user.setNickname("Gee");
+            StringBuilder stringBuilder = new StringBuilder();
+            Random random = new Random();
+            for (int i = 0; i < 8; i++) {
+                stringBuilder.append(random.nextInt(10));
+            }
+            user.setNickname("麻雀用户: " + stringBuilder.toString());
+            user.setFaceImage("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268_150x150.png");
+            user.setFaceImageBig("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268.png");
             user.setPassword(MD5Utils.getPwd(user.getPassword()));
             userResult = userService.insert(user);
         }

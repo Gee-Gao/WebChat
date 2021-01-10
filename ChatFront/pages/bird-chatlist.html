@@ -6,6 +6,12 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.css" rel="stylesheet" />
 		<link href="../css/header.css" rel="stylesheet" />
+		<style>
+			.mui-content{
+				height: 100%;
+				overflow: auto;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -13,16 +19,68 @@
 		<header class="mui-bar mui-bar-nav title">
 			<h1 class="mui-title title-color">聊天列表</h1>
 		</header>
-		
+
 		<!-- 主体部分 -->
 		<div class="mui-content">
-			聊天
+			<ul class="mui-table-view" id="ul_friend_request_list" style="margin-bottom: 10px;">
+			</ul>
 		</div>
-		
-		
+
+		<script src="../js/app.js"></script>
 		<script src="../js/mui.js"></script>
 		<script type="text/javascript">
-			mui.init()
+			mui.init();
+			mui.plusReady(function() {
+				//加载好友请求列表
+				function loadingFriendsRequest() {
+					//获取全局用户对象
+					var user = app.getUserGlobalInfo();
+					mui.ajax(app.serverUrl + "user/queryFriendsRequest?userId=" + user.id, {
+						timeout: 10000, //超时时间10秒
+						success: function(data) {
+							if(data.status==200){
+								var friendReqeustList = data.data;
+								var ul_friend_request_list = document.getElementById("ul_friend_request_list");
+								if(friendReqeustList!=null && friendReqeustList.length>0){
+									var friendRequestHTML="";//用于存储好友列表拼接字符串的变量
+									//遍历好友请求列表
+									for(var i =0;i<friendReqeustList.length;i++){
+										friendRequestHTML+=renderFriendRequest(friendReqeustList[i]);
+									}
+									//将拼接好的好友列表字符串嵌入至ul标签对象中
+									ul_friend_request_list.innerHTML = friendRequestHTML;
+								}else{
+									ul_friend_request_list.innerHTML="";
+								}
+							}
+						}
+					})
+				}
+
+				// 用于拼接单个好友列表信息的字符串
+				function renderFriendRequest(friend) {
+					html='<li class="btnOper mui-table-view-cell mui-media">'+
+							'<a href="javascript:;">'+
+							'<img class="mui-media-object mui-pull-left" src="'+app.imgServerUrl+friend.sendFaceImage+'">'+
+							'<span class="mui-pull-right">'+
+							'<button type="button" class="ignoreRequest mui-btn mui-btn-grey" friendId="'+friend.sendUserId+'" style="padding: 5px 10px;margin-right: 5px;">忽略</button>'+
+							'<button type="button" class="passRequest mui-btn mui-btn-success" friendId="'+friend.sendUserId+'" style="padding: 5px 10px;">通过</button>'+
+							'</span>'+
+							'<div class="mui-media-body">'+
+							'<label>'+friend.sendNickname+'</label>'+
+							'<p class="mui-ellipsis">请求添加你为好友</p>'+
+							'</div>'+
+							'</a>'+
+							'</li>';
+					return html;
+				}
+
+				//加载好友请求记录
+				var currentWebview = plus.webview.currentWebview();
+				currentWebview.addEventListener("show", function() {
+					loadingFriendsRequest()
+				})
+			})
 		</script>
 	</body>
 </html>
