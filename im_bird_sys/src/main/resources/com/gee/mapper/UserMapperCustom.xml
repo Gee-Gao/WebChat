@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.gee.mapper.UserMapperCustom" >
+<mapper namespace="com.gee.mapper.UserMapperCustom">
+    <!--查询添加好友请求列表-->
     <select id="queryFriendRequestList" resultType="com.gee.vo.FriendsRequestVo" parameterType="String">
-        select
-            tu.id as sendUserId,
-            tu.username as sendUsername,
-            tu.face_image as sendFaceImage,
-            tu.nickname as sendNickname
+        select tu.id         as sendUserId,
+               tu.username   as sendUsername,
+               tu.face_image as sendFaceImage,
+               tu.nickname   as sendNickname
         from friends_request fr
-        left  join t_users tu
-        on fr.send_user_id = tu.id
+                 left join t_users tu
+                           on fr.send_user_id = tu.id
         where fr.accept_user_id = #{acceptUserId}
+    </select>
+
+    <!--查询好友列表-->
+    <select id="queryMyFriends" resultType="com.gee.vo.MyFriendsVo" parameterType="String">
+        select u.id         as friendUserId,
+               u.username   as friendUsername,
+               u.face_image as friendFaceImage,
+               u.nickname   as friendNickname
+        from my_friends mf
+                 left join t_users u
+                           on u.id = mf.my_friend_user_id
+        where mf.my_user_id = #{userId}
     </select>
 </mapper>

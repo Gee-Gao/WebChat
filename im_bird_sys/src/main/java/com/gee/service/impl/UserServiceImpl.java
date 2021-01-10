@@ -14,6 +14,7 @@ import com.gee.utils.FileUtils;
 import com.gee.utils.QRCodeUtils;
 import com.gee.utils.Sid;
 import com.gee.vo.FriendsRequestVo;
+import com.gee.vo.MyFriendsVo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -95,6 +96,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<FriendsRequestVo> queryFriendRequestList(String acceptUserId) {
         return userMapperCustom.queryFriendRequestList(acceptUserId);
+    }
+
+    //处理忽略请求
+    @Override
+    public void deleteFriendRequest(FriendsRequest friendsRequest) {
+        friendsRequestMapper.deleteByFriendRequest(friendsRequest);
+    }
+
+    //处理通过请求
+    @Override
+    public void passFriendRequest(String sendUserId, String acceptUserId) {
+        //进行双向好友绑定
+        saveFriend(sendUserId, acceptUserId);
+        saveFriend(acceptUserId, sendUserId);
+
+        //删除好友请求表的数据
+        FriendsRequest friendsRequest = new FriendsRequest();
+        friendsRequest.setSendUserId(sendUserId);
+        friendsRequest.setAcceptUserId(acceptUserId);
+        deleteFriendRequest(friendsRequest);
+    }
+
+    //查询好友列表
+    @Override
+    public List<MyFriendsVo> queryMyFriends(String userId) {
+        return userMapperCustom.queryMyFriends(userId);
+    }
+
+    //添加好友
+    private void saveFriend(String sendUserId, String acceptUserId) {
+        MyFriends myFriends = new MyFriends();
+        myFriends.setMyUserId(sendUserId);
+        myFriends.setMyFriendUserId(acceptUserId);
+        myFriends.setId(sid.nextShort());
+        myFriendsMapper.insert(myFriends);
     }
 
     @Override

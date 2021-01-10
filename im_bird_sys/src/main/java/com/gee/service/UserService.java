@@ -1,7 +1,9 @@
 package com.gee.service;
 
+import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.User;
 import com.gee.vo.FriendsRequestVo;
+import com.gee.vo.MyFriendsVo;
 
 import java.util.List;
 
@@ -21,4 +23,13 @@ public interface UserService {
 
     //查询添加好友请求列表
     List<FriendsRequestVo> queryFriendRequestList(String acceptUserId);
+
+    //处理忽略请求
+    void deleteFriendRequest(FriendsRequest friendsRequest);
+
+    //处理通过请求
+    void passFriendRequest(String sendUserId, String acceptUserId);
+
+    //查询好友列表
+    List<MyFriendsVo> queryMyFriends(String userId);
 }

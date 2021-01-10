@@ -7,6 +7,10 @@
 		<link href="../css/mui.css" rel="stylesheet" />
 		<link href="../css/header.css" rel="stylesheet" />
 		<style>
+			html{
+				touch-action: none;
+			}
+
 			.mui-content{
 				height: 100%;
 				overflow: auto;
@@ -38,19 +42,30 @@
 					mui.ajax(app.serverUrl + "user/queryFriendsRequest?userId=" + user.id, {
 						timeout: 10000, //超时时间10秒
 						success: function(data) {
-							if(data.status==200){
+							if (data.status == 200) {
 								var friendReqeustList = data.data;
 								var ul_friend_request_list = document.getElementById("ul_friend_request_list");
-								if(friendReqeustList!=null && friendReqeustList.length>0){
-									var friendRequestHTML="";//用于存储好友列表拼接字符串的变量
+								if (friendReqeustList != null && friendReqeustList.length > 0) {
+									var friendRequestHTML = ""; //用于存储好友列表拼接字符串的变量
 									//遍历好友请求列表
-									for(var i =0;i<friendReqeustList.length;i++){
-										friendRequestHTML+=renderFriendRequest(friendReqeustList[i]);
+									for (var i = 0; i < friendReqeustList.length; i++) {
+										friendRequestHTML += renderFriendRequest(friendReqeustList[i]);
 									}
 									//将拼接好的好友列表字符串嵌入至ul标签对象中
 									ul_friend_request_list.innerHTML = friendRequestHTML;
-								}else{
-									ul_friend_request_list.innerHTML="";
+
+									//动态处理忽略和通过事件
+									mui(".btnOper").on("tap", ".ignoreRequest", function() {
+										var friendId = this.getAttribute("friendId");
+										operatorFriend(user.id,friendId,0)
+									});
+									mui(".btnOper").on("tap", ".passRequest", function() {
+										var friendId = this.getAttribute("friendId");
+										operatorFriend(user.id,friendId,1)
+									})
+
+								} else {
+									ul_friend_request_list.innerHTML = "";
 								}
 							}
 						}
@@ -59,25 +74,45 @@
 
 				// 用于拼接单个好友列表信息的字符串
 				function renderFriendRequest(friend) {
-					html='<li class="btnOper mui-table-view-cell mui-media">'+
-							'<a href="javascript:;">'+
-							'<img class="mui-media-object mui-pull-left" src="'+app.imgServerUrl+friend.sendFaceImage+'">'+
-							'<span class="mui-pull-right">'+
-							'<button type="button" class="ignoreRequest mui-btn mui-btn-grey" friendId="'+friend.sendUserId+'" style="padding: 5px 10px;margin-right: 5px;">忽略</button>'+
-							'<button type="button" class="passRequest mui-btn mui-btn-success" friendId="'+friend.sendUserId+'" style="padding: 5px 10px;">通过</button>'+
-							'</span>'+
-							'<div class="mui-media-body">'+
-							'<label>'+friend.sendNickname+'</label>'+
-							'<p class="mui-ellipsis">请求添加你为好友</p>'+
-							'</div>'+
-							'</a>'+
+					html = '<li class="btnOper mui-table-view-cell mui-media">' +
+							'<a href="javascript:;">' +
+							'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.sendFaceImage + '">' +
+							'<span class="mui-pull-right">' +
+							'<button type="button" class="ignoreRequest mui-btn mui-btn-grey" friendId="' + friend.sendUserId +
+							'" style="padding: 5px 10px;margin-right: 5px;">忽略</button>' +
+							'<button type="button" class="passRequest mui-btn mui-btn-success" friendId="' + friend.sendUserId +
+							'" style="padding: 5px 10px;">通过</button>' +
+							'</span>' +
+							'<div class="mui-media-body">' +
+							'<label>' + friend.sendNickname + '</label>' +
+							'<p class="mui-ellipsis">请求添加你为好友</p>' +
+							'</div>' +
+							'</a>' +
 							'</li>';
 					return html;
 				}
 
+				//处理好友请求
+				function operatorFriend(userId, friendId, operType) {
+					mui.ajax(app.serverUrl + "user/operFriendRequest?acceptUserId=" + userId + "&sendUserId=" + friendId +
+							"&operType=" + operType), {
+						timeout: 10000, //超时时间10秒
+						success: function(data) {
+							if (data.status == 200) {
+								//更新通讯录
+								var myFriendList = data.data;
+								app.setContactList(myFriendList);
+								//重新加载好友请求记录
+								loadingFriendsRequest();
+
+							}
+						}
+					}
+				}
+
+
 				//加载好友请求记录
-				var currentWebview = plus.webview.currentWebview();
-				currentWebview.addEventListener("show", function() {
+				var currentWebview = plus.webview.currentWebview(); currentWebview.addEventListener("show", function() {
 					loadingFriendsRequest()
 				})
 			})

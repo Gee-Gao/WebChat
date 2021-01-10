@@ -1,7 +1,9 @@
 package com.gee.controller;
 
 import com.gee.bo.UserBo;
+import com.gee.enums.OperatorFriendRequestTypeEnum;
 import com.gee.enums.SearchFriendsStatusEnum;
+import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.User;
 import com.gee.service.UserService;
 import com.gee.utils.FastDFSClient;
@@ -24,6 +26,22 @@ public class UserController {
     private UserService userService;
     @Resource
     private FastDFSClient fastDFSClient;
+
+
+    //好友请求处理
+    @GetMapping("operFriendRequest")
+    public IWdzlJSONResult operFriendRequest(FriendsRequest friendsRequest, Integer operType) {
+        //如果请求类型为忽略，删除对应好友请求
+        if (OperatorFriendRequestTypeEnum.IGNORE.type == operType) {
+            userService.deleteFriendRequest(friendsRequest);
+        }
+        //如果请求类型为通过，添加好友，同时删除好友请求
+        if (OperatorFriendRequestTypeEnum.PASS.type == operType) {
+            userService.passFriendRequest(friendsRequest.getSendUserId(), friendsRequest.getAcceptUserId());
+        }
+        //查询好友列表并返回
+        return IWdzlJSONResult.ok( userService.queryMyFriends(friendsRequest.getAcceptUserId()));
+    }
 
     //查询添加好友请求列表
     @GetMapping("queryFriendsRequest")
