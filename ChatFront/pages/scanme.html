@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<script src="../js/mui.js"></script>
+		<link href="../css/header.css" rel="stylesheet" />
+		<style type="text/css">
+			#bcid {
+				width: 100%;
+				height: 89.5%;
+				position: absolute;
+				background: #000000;
+				top: 40px;
+			}
+
+			html,
+			body,
+			div {
+				height: 100%;
+				width: 100%;
+			}
+
+			html {
+				touch-action: none;
+			}
+
+			.fbt {
+				color: #FFFFFF;
+				width: 50%;
+				background-color: #FF4136;
+				float: left;
+				line-height: 44px;
+				text-align: center;
+			}
+
+			#turnTheLight {
+				font-size: 15px;
+				line-height: 25px;
+				color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<!--头部标题栏 -->
+		<header class="mui-bar mui-bar-nav title">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left title-color"></a>
+			<h1 class="mui-title title-color"><b>扫一扫</b></h1>
+			<span class="mui-icon mui-spin mui-pull-right" id="turnTheLight">闪光灯</span>
+		</header>
+
+		<!--盛放扫描控件的div-->
+		<div id="bcid"></div>
+
+		<div class="mui-bar mui-bar-footer" style="padding: 0px;">
+			<div class="fbt" onclick="scanPicture();">从相册选择二维码</div>
+			<div class="fbt mui-action-back">取　 消</div>
+		</div>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			scan = null; //扫描对象
+			mui.plusReady(function() {
+				mui.init();
+				setTimeout("startRecognize()", 200)
+			});
+
+			function startRecognize() {
+				try {
+					var filter;
+					//自定义的扫描控件样式
+					var styles = {
+						frameColor: "#ff4316",
+						scanbarColor: "#ff4316",
+						background: ""
+					}
+					//扫描控件构造
+					scan = new plus.barcode.Barcode('bcid', filter, styles);
+					scan.onmarked = onmarked;
+					scan.onerror = onerror;
+					scan.start();
+
+					//打开关闭闪光灯处理
+					var flag = false;
+					document.getElementById("turnTheLight").addEventListener('tap', function() {
+						if (flag == false) {
+							scan.setFlash(true);
+							flag = true;
+						} else {
+							scan.setFlash(false);
+							flag = false;
+						}
+					});
+				} catch (e) {
+					alert("出现错误啦:\n" + e);
+				}
+			};
+
+			function onerror(e) {
+				alert(e);
+			};
+
+			function onmarked(type, result) {
+				if (type == 0) {
+					//对扫描结果进行拆分
+					var res = result.split("bird_qrcode:")
+					if (res.length != 2) {
+						alert("扫描结果为： " + result)
+					} else {
+						var friendName = res[1];
+						var user = app.getUserGlobalInfo();
+						plus.nativeUI.showWaiting("请稍后...");
+						mui.ajax(app.serverUrl + "/user/searchFriend?myUserId=" + user.id + "&friendUserName=" + friendName, {
+							timeout: 10000, //超时时间设置为10秒；
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							success: function(data) {
+								// 关闭等待框
+								plus.nativeUI.closeWaiting();
+								if (data.status == 200) {
+									mui.openWindow({
+										url: "searchFriendsResult.html",
+										id: "searchFriendsResult.html",
+										extras: {
+											friend: data.data
+										}
+									})
+								} else {
+									app.showToast(data.msg, "error");
+								}
+							}
+						});
+					}
+				}
+				setTimeout(function(){
+					scan.start();
+				},1000)
+
+			};
+
+			// 从相册中选择二维码图片
+			function scanPicture() {
+				plus.gallery.pick(function(path) {
+					plus.barcode.scan(path, onmarked, function(error) {
+						plus.nativeUI.alert("无法识别此图片");
+					});
+				}, function(err) {
+					plus.nativeUI.alert("Failed: " + err.message);
+				});
+			}
+		</script>
+	</body>
+</html>
