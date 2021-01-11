@@ -57,11 +57,11 @@
 									//动态处理忽略和通过事件
 									mui(".btnOper").on("tap", ".ignoreRequest", function() {
 										var friendId = this.getAttribute("friendId");
-										operatorFriend(user.id,friendId,0)
+										operatorFriend(user.id, friendId, 0)
 									});
 									mui(".btnOper").on("tap", ".passRequest", function() {
 										var friendId = this.getAttribute("friendId");
-										operatorFriend(user.id,friendId,1)
+										operatorFriend(user.id, friendId, 1)
 									})
 
 								} else {
@@ -95,24 +95,21 @@
 				//处理好友请求
 				function operatorFriend(userId, friendId, operType) {
 					mui.ajax(app.serverUrl + "user/operFriendRequest?acceptUserId=" + userId + "&sendUserId=" + friendId +
-							"&operType=" + operType), {
-						timeout: 10000, //超时时间10秒
+							"&operType=" + operType, {
+						timeout: 10000,
 						success: function(data) {
-							if (data.status == 200) {
-								//更新通讯录
-								var myFriendList = data.data;
-								app.setContactList(myFriendList);
-								//重新加载好友请求记录
-								loadingFriendsRequest();
-
-							}
+							//更新通讯录
+							var myFriendList = data.data;
+							app.setContactList(myFriendList);
+							//重新加载好友请求记录
+							loadingFriendsRequest();
 						}
-					}
+					});
 				}
 
-
 				//加载好友请求记录
-				var currentWebview = plus.webview.currentWebview(); currentWebview.addEventListener("show", function() {
+				var currentWebview = plus.webview.currentWebview();
+				currentWebview.addEventListener("show", function() {
 					loadingFriendsRequest()
 				})
 			})

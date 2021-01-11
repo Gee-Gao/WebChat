@@ -78,6 +78,11 @@
 					refreshUserInfo();
 				});
 
+				//添加自定义事件，刷新头像及个人信息
+				window.addEventListener("refresh",function(){
+					refreshUserInfo();
+				});
+
 				//头像
 				document.getElementById("link_myface").addEventListener("tap", function() {
 					mui.openWindow("myface.html", "myface.html")
@@ -87,7 +92,7 @@
 				document.getElementById("link_nickname").addEventListener("tap", function() {
 					mui.openWindow("mynickname.html", "mynickname.html")
 				})
-				
+
 				//二维码
 				document.getElementById("link_my_qrcode").addEventListener("tap", function() {
 					mui.openWindow("myqrcode.html", "myqrcode.html")

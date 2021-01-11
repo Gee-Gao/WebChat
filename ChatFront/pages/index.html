@@ -102,7 +102,17 @@
 						}
 					}
 				});
-			})
+				//延时加载
+				setTimeout("initData()", 500);
+
+			});
+			//预加载
+			function initData() {
+				var bird_chatlist = plus.webview.getWebviewById("bird-chatlist.html");
+				mui.fire(bird_chatlist, 'refresh');
+				var bird_me = plus.webview.getWebviewById("bird-me.html");
+				mui.fire(bird_me, 'refresh');
+			}
 		</script>
 	</body>
 </html>
