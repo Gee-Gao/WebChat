@@ -27,6 +27,15 @@ public class UserController {
     @Resource
     private FastDFSClient fastDFSClient;
 
+    //好友列表查询
+    @GetMapping("myFriends")
+    public IWdzlJSONResult myFriends(String userId) {
+        //数据校验
+        if(StringUtils.isBlank(userId))
+            return IWdzlJSONResult.errorMsg("用户id为空");
+        //查询好友列表并返回
+        return IWdzlJSONResult.ok(userService.queryMyFriends(userId));
+    }
 
     //好友请求处理
     @GetMapping("operFriendRequest")
@@ -40,7 +49,7 @@ public class UserController {
             userService.passFriendRequest(friendsRequest.getSendUserId(), friendsRequest.getAcceptUserId());
         }
         //查询好友列表并返回
-        return IWdzlJSONResult.ok( userService.queryMyFriends(friendsRequest.getAcceptUserId()));
+        return IWdzlJSONResult.ok(userService.queryMyFriends(friendsRequest.getAcceptUserId()));
     }
 
     //查询添加好友请求列表
