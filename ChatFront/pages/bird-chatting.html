@@ -46,7 +46,6 @@
 		<script src="../js/mui.js"></script>
 		<script type="application/javascript" src="../js/app.js"></script>
 		<script type="text/javascript">
-
 			var friendUserId;
 			var friendNickname;
 			var friendFaceImage;
@@ -65,6 +64,8 @@
 				friendFaceImage = chattingWebview.friendFaceImage;
 				//动态设置标题栏好友昵称
 				document.getElementById("chatting-nickname").innerHTML = friendNickname;
+				//初始化聊天记录
+				initChatHistory();
 				//获取聊天列表容器对象
 				var areaMsgList = document.getElementById("msg");
 				//设置聊天记录进入页面的时候自动滚动到最后一条
@@ -108,15 +109,51 @@
 					//发送消息完毕之后，把发送按钮的颜色改为灰色
 					send.setAttribute("class", "mui-btn-gray");
 					//构建chatMsg
-					var chatMsg = new app.ChatMsg(me.id,friendUserId,msg_text_content,null);
+					var chatMsg = new app.ChatMsg(me.id, friendUserId, msg_text_content, null);
 					//构建dataContent
-					var dataContent = new app.DataContent(app.CHAT,chatMsg,null);
+					var dataContent = new app.DataContent(app.CHAT, chatMsg, null);
 
 					//调用WebSocket,发送消息到netty后端
 					var wsWebview = plus.webview.getWebviewById("bird-chatlist.html");
-					wsWebview.evalJS("CHAT.chat('"+JSON.stringify(dataContent)+"')")
+					wsWebview.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
+					//保存聊天历史记录到本地缓存
+					app.saveUserChatHistory(me.id, friendUserId, msg_text_content, 1);
 				});
 			});
+			//初始化聊天记录
+			function initChatHistory() {
+				var msg_list = document.getElementById("msg");
+				var me = app.getUserGlobalInfo();
+				var myId = me.id;
+				var myFaceImg = me.faceImage;
+				var chatHistoryList = app.getUserChatHistory(myId, friendUserId);
+				var chatHtml = "";
+
+				for (var i = 0; i < chatHistoryList.length; i++) {
+					var singleMsg = chatHistoryList[i];
+					if (singleMsg.flag == 1) {
+						chatHtml += '<div class="me_lists">' +
+								'<div class="header_img">' +
+								'<img src="' + app.imgServerUrl + myFaceImg + '" width="40px" height="40px" />' +
+								'</div>' +
+								'<div class="msg-wrapper left">' +
+								'<p class="msg-right-green" style="text-align: left;">' + singleMsg.msg + '</p>' +
+								'</div>' +
+								'</div>';
+					} else {
+						chatHtml += '<div class="friend_lists">' +
+								'<div class="header_img">' +
+								'<img src="' + app.imgServerUrl + friendFaceImage + '" width="40px" height="40px" />' +
+								'</div>' +
+								'<div class="msg-wrapper right">' +
+								'<p class="msg-left-white">' + singleMsg.msg + '</p>' +
+								'</div>' +
+								'</div>';
+					}
+				}
+				msg_list.innerHTML = chatHtml
+			}
+
 			//重新调整聊天页面窗口
 			function resizeScreen() {
 				//获取聊天列表容器对象

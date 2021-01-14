@@ -166,7 +166,7 @@
 					var dataContent = JSON.parse(e.data);
 					var action = dataContent.action;
 					//如果是拉取好友请求，重新渲染联系人列表
-					if(action == app.PULL_FRIEND){
+					if (action == app.PULL_FRIEND) {
 						var user = app.getUserGlobalInfo();
 						fetchContactList(user);
 						return false;
@@ -175,6 +175,7 @@
 					var chatMsg = dataContent.chatContent;
 					var msg = chatMsg.msg;
 					var friendUserId = chatMsg.senderId;
+					var myId = chatMsg.receiverId;
 
 					var chatWebview = plus.webview.getWebviewById("bird-chatting" + friendUserId);
 					if (chatWebview != null) {
@@ -184,8 +185,11 @@
 					}
 
 					//接收到消息之后，对消息进行签收
-					var dataContentSign = new app.DataContent(app.SIGNED,null,chatMsg.msgId);
+					var dataContentSign = new app.DataContent(app.SIGNED, null, chatMsg.msgId);
 					CHAT.chat(JSON.stringify(dataContentSign));
+
+					//保存聊天记录到本地缓存
+					app.saveUserChatHistory(myId, friendUserId, msg, 2)
 				},
 				wsclose: function() {
 					console.log("websocket连接关闭");
