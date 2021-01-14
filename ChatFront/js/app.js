@@ -1,20 +1,20 @@
 window.app = {
-	
+
 	/**
 	 * netty服务后端发布的url地址
 	 */
-	nettyServerUrl: 'ws://192.168.1.3:808 8/ws',
-	
+	nettyServerUrl: 'ws://192.168.1.3:8088/ws',
+
 	/**
 	 * 后端服务发布的url地址
 	 */
 	serverUrl: "http://192.168.1.3:8080/im_bird_sys/",
-	
+
 	/**
 	 * 图片服务器的url地址
 	 */
 	imgServerUrl: 'http://39.106.167.46:80/',
-	
+
 	/**
 	 * 判断字符串是否为空
 	 * @param {Object} str
@@ -27,14 +27,14 @@ window.app = {
 		}
 		return false;
 	},
-	
+
 	/**
 	 * 封装消息提示框，默认mui的不支持居中和自定义icon，所以使用h5+
 	 * @param {Object} msg
 	 * @param {Object} type
 	 */
 	showToast: function(msg, type) {
-		plus.nativeUI.toast(msg, 
+		plus.nativeUI.toast(msg,
 			{icon: "../images/" + type + ".png", verticalAlign: "center"})
 	},
 	/**
@@ -57,7 +57,7 @@ window.app = {
 	userLogout:function(){
 		plus.storage.removeItem("userInfo");
 	},
-	
+
 	//保存用户的联系人列表
 	setContactList:function(myFriendList){
 		var contactListStr = JSON.stringify(myFriendList);
@@ -68,11 +68,11 @@ window.app = {
 	 */
 	getContactList: function() {
 		var contactListStr = plus.storage.getItem("contactList");
-		
+
 		if (!this.isNotNull(contactListStr)) {
 			return [];
 		}
-		
+
 		return JSON.parse(contactListStr);
 	},
 	getFriendFromContactList:function(friendId){
@@ -91,7 +91,7 @@ window.app = {
 		}else{
 			return null;
 		}
-		
+
 	},
 	/**
 	 * @param {Object} myId
@@ -104,7 +104,7 @@ window.app = {
 		var chatKey = "chat-"+myId+"-" + friendId;
 		//从本地缓存获取聊天记录是否存在
 		var chatHistoryListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天对象的变量
 		var chatHistoryList;
 		if(me.isNotNull(chatHistoryListStr)){
@@ -113,23 +113,23 @@ window.app = {
 			//如果唯恐，赋一个空的list
 			chatHistoryList = [];
 		}
-		
+
 		//构建聊天记录对象
 		var singleMsg = new me.ChatHistory(myId,friendId,msg,flag);
 		//向list 中追加msg对象
 		chatHistoryList.push(singleMsg);
-		
+
 		//写入本地缓存
 		plus.storage.setItem(chatKey,JSON.stringify(chatHistoryList));
-		
+
 	},
-	
+
 	getUserChatHistory:function(myId,friendId){
 		var me = this;
 		var chatKey = "chat-"+myId+"-" + friendId;
 		//从本地缓存获取聊天记录是否存在
 		var chatHistoryListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天对象的变量
 		var chatHistoryList;
 		if(me.isNotNull(chatHistoryListStr)){
@@ -154,14 +154,14 @@ window.app = {
 	 * @param {Object} myId
 	 * @param {Object} friendId
 	 * @param {Object} msg
-	 * @param {Object} isRead 
+	 * @param {Object} isRead
 	 */
 	saveUserChatSnapshot:function(myId,friendId,msg,isRead){
 		var me = this;
 		var chatKey = "chat-snapshot" + myId;
 		//从本地缓存获取聊天快照记录是否存在
 		var chatSnapshotListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天快照对象的变量
 		var chatSnapshotList;
 		if(me.isNotNull(chatSnapshotListStr)){
@@ -178,22 +178,22 @@ window.app = {
 			//如果为空，赋一个空的list
 			chatSnapshotList = [];
 		}
-		
+
 		//构建聊天快照对象
 		var singleMsg = new me.CHatSnapshot(myId,friendId,msg,isRead);
 		//向list 中追加snap对象
 		chatSnapshotList.unshift(singleMsg);
-		
+
 		//写入本地缓存
 		plus.storage.setItem(chatKey,JSON.stringify(chatSnapshotList));
-		
+
 	},
 	getUserChatSnapshot:function(myId){
 		var me = this;
 		var chatKey = "chat-snapshot" + myId;
 		//从本地缓存中获取聊天快照的list
 		var chatSnapshotListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天快照对象的变量
 		var chatSnapshotList;
 		if(me.isNotNull(chatSnapshotListStr)){
@@ -208,7 +208,7 @@ window.app = {
 		var chatKey = "chat-snapshot" + myId;
 		//从本地缓存获取聊天快照记录是否存在
 		var chatSnapshotListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天快照对象的变量
 		var chatSnapshotList;
 		if(me.isNotNull(chatSnapshotListStr)){
@@ -239,7 +239,7 @@ window.app = {
 		var chatKey = "chat-snapshot" + myId;
 		//从本地缓存获取聊天快照记录是否存在
 		var chatSnapshotListStr = plus.storage.getItem(chatKey);
-		
+
 		//用于存储本地聊天快照对象的变量
 		var chatSnapshotList;
 		if(me.isNotNull(chatSnapshotListStr)){
@@ -261,7 +261,7 @@ window.app = {
 	},
 	//和后段枚举一一对应
 	CONNECT: 1,    // "第一次(或重连)初始化连接"
-	CHAT: 2,       // "聊天消息"),	
+	CHAT: 2,       // "聊天消息"),
 	SIGNED: 3,     // "消息签收"),
 	KEEPALIVE: 4,  //"客户端保持心跳"),
 	PULL_FRIEND: 5,// "拉取好友");
@@ -283,10 +283,10 @@ window.app = {
 	 * @param {Object} chatMsg
 	 * @param {Object} extand
 	 */
-	DataContent: function(action,chatMsg,extand){
+	DataContent: function(action,chatContent,extend){
 		this.action = action;
-		this.chatMsg = chatMsg;
-		this.extand = extand;
+		this.chatContent = chatContent;
+		this.extend = extend;
 	},
 	ChatHistory: function(myId,friendId,msg,flag){
 		this.myId = myId;
@@ -307,5 +307,4 @@ window.app = {
 		this.msg = msg;
 		this.isRead = isRead;
 	}
-	
 }

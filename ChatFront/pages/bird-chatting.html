@@ -31,33 +31,14 @@
 		</header>
 
 		<div id="msg-outter" class="mui-content">
-			<div id='msg'>
-
-				<div class="friend_lists">
-					<div class="header_img">
-						<img src="../images/face-cat.jpg" width="40px" height="40px" />
-					</div>
-					<div class="msg-wrapper right">
-						<p class="msg-left-white">项目bug把我的心态搞奔了？</p>
-					</div>
-				</div>
-
-				<div class="me_lists">
-					<div class="header_img">
-						<img src="../plugin/v3.1.6/images/picture.jpg" width="40px" height="40px" />
-					</div>
-					<div class="msg-wrapper left">
-						<p class="msg-right-green" style="text-align: left;">兄弟，淡定，抽根烟就好了，嘿嘿</p>
-					</div>
-				</div>
-			</div>
+			<div id='msg'></div>
 		</div>
 
 		<footer>
 			<div class="footer-center">
 				<textarea id='msg-text' type="text" class='input-text'></textarea>
 			</div>
-			<label  class="footer-right">
+			<label class="footer-right">
 				<button type="button" class="mui-btn mui-btn-grey" id="send">发送</button>
 			</label>
 		</footer>
@@ -126,9 +107,14 @@
 					msg_text.value = "";
 					//发送消息完毕之后，把发送按钮的颜色改为灰色
 					send.setAttribute("class", "mui-btn-gray");
+					//构建chatMsg
+					var chatMsg = new app.ChatMsg(me.id,friendUserId,msg_text_content,null);
+					//构建dataContent
+					var dataContent = new app.DataContent(app.CHAT,chatMsg,null);
+
 					//调用WebSocket,发送消息到netty后端
 					var wsWebview = plus.webview.getWebviewById("bird-chatlist.html");
-					wsWebview.evalJS("CHAT.chat('"+msg_text_content+"')")
+					wsWebview.evalJS("CHAT.chat('"+JSON.stringify(dataContent)+"')")
 				});
 			});
 			//重新调整聊天页面窗口
@@ -180,7 +166,6 @@
 				var audioPlayer = plus.audio.createPlayer("../mp3/di_didi.mp3");
 				audioPlayer.play();
 			}
-
 		</script>
 	</body>
 </html>

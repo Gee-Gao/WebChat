@@ -7,11 +7,11 @@
 		<link href="../css/mui.css" rel="stylesheet" />
 		<link href="../css/header.css" rel="stylesheet" />
 		<style>
-			html{
+			html {
 				touch-action: none;
 			}
 
-			.mui-content{
+			.mui-content {
 				height: 100%;
 				overflow: auto;
 			}
@@ -141,29 +141,48 @@
 					if (CHAT.socket != null && CHAT.socket != undefined && CHAT.socket.readyState == WebSocket.OPEN) {
 						//将用户输入的消息进行发送
 						CHAT.socket.send(msg);
-					}else{
+					} else {
 						CHAT.init();
-						setTimeout("CHAT.reChat('"+msg+"')",1000)
+						setTimeout("CHAT.reChat('" + msg + "')", 1000)
 					}
 
 				},
 				//socket重连机制
-				reChat:function(msg){
+				reChat: function(msg) {
 					CHAT.socket.send(msg);
 				},
 				wsopen: function() {
-					console.log("websocket连接成功")
+					console.log("websocket连接成功");
+					var me = app.getUserGlobalInfo();
+					//构建chatMsg
+					var chatMsg = new app.ChatMsg(me.id, null, null, null);
+					//构建dataContent
+					var dataContent = new app.DataContent(app.CONNECT, chatMsg, null);
+					CHAT.chat(JSON.stringify(dataContent));
+
 				},
 				wsmessage: function(e) {
-					var chatWebview = plus.webview.getWebviewById("bird-chatting210109CGZ8WH1N0H");
-					chatWebview.evalJS("receiveMsg('"+e.data+"')");
-					//将页面的滚动条重新进行resize
-					chatWebview.evalJS("resizeScreen()");
+					console.log(e.data)
+					var dataContent = JSON.parse(e.data);
+					var chatMsg = dataContent.chatContent;
+					var msg = chatMsg.msg;
+					var friendUserId = chatMsg.senderId;
+
+					var chatWebview = plus.webview.getWebviewById("bird-chatting" + friendUserId);
+					if (chatWebview != null) {
+						chatWebview.evalJS("receiveMsg('" + msg + "')");
+						//将页面的滚动条重新进行resize
+						chatWebview.evalJS("resizeScreen()");
+					}
+
+					//接收到消息之后，对消息进行签收
+					var dataContentSign = new app.DataContent(app.SIGNED,null,chatMsg.msgId);
+					CHAT.chat(JSON.stringify(dataContentSign));
 				},
 				wsclose: function() {
-					console.log("websocket连接关闭")
+					console.log("websocket连接关闭");
 				},
-				wserror: function() {
+				wserror: function(e) {
 					app.showToast("连接出现异常", "error");
 				}
 			}
