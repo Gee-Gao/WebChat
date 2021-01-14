@@ -226,12 +226,28 @@
 				document.getElementById("contactList").innerHTML = friendHtml;
 				//清空数组
 				clearFriendArray();
+				//为通讯录好友列表批量绑定触摸事件
+				mui("#contactList").on("tap", ".chat-with-friend", function() {
+					var friendUserId = this.getAttribute("friendUserId");
+					var friendNickname = this.getAttribute("friendNickname");
+					var friendFaceImage = this.getAttribute("friendFaceImage");
+					mui.openWindow({
+						url: "bird-chatting.html",
+						id: "bird-chatting"+friendUserId,
+						extras: {
+							friendUserId: friendUserId,
+							friendNickname: friendNickname,
+							friendFaceImage: friendFaceImage
+						}
+					});
+				})
+
 			}
 
 			function showList() {
 				var list = document.getElementById("list");
 
-				list.style.height = window.screen.height+"px";
+				list.style.height = window.screen.height + "px";
 				//创建列表显示
 				window.indexedList = new mui.IndexedList(list);
 			}

@@ -110,9 +110,63 @@
 				//加载好友请求记录
 				var currentWebview = plus.webview.currentWebview();
 				currentWebview.addEventListener("show", function() {
-					loadingFriendsRequest()
-				})
+					loadingFriendsRequest();
+					CHAT.init();
+				});
+				CHAT.init();
 			})
+
+			window.CHAT = {
+				socket: null,
+				init: function() {
+					//判断是否支持websocket
+					if (window.WebSocket) {
+						//如果当前WebSocket状态已经连接，无需重复初始化WebSocket
+						if (CHAT.socket != null && CHAT.socket != undefined && CHAT.socket.readyState == WebSocket.OPEN) {
+							return false;
+						}
+
+						CHAT.socket = new WebSocket(app.nettyServerUrl);
+						CHAT.socket.onopen = CHAT.wsopen,
+								CHAT.socket.close = CHAT.wsclose,
+								CHAT.socket.onerror = CHAT.wserror,
+								CHAT.socket.onmessage = CHAT.wsmessage
+
+					} else {
+						app.showToast("很遗憾，您的手机不支持websocket,无法使用", "error");
+					}
+				},
+
+				chat: function(msg) {
+					if (CHAT.socket != null && CHAT.socket != undefined && CHAT.socket.readyState == WebSocket.OPEN) {
+						//将用户输入的消息进行发送
+						CHAT.socket.send(msg);
+					}else{
+						CHAT.init();
+						setTimeout("CHAT.reChat('"+msg+"')",1000)
+					}
+
+				},
+				//socket重连机制
+				reChat:function(msg){
+					CHAT.socket.send(msg);
+				},
+				wsopen: function() {
+					console.log("websocket连接成功")
+				},
+				wsmessage: function(e) {
+					var chatWebview = plus.webview.getWebviewById("bird-chatting210109CGZ8WH1N0H");
+					chatWebview.evalJS("receiveMsg('"+e.data+"')");
+					//将页面的滚动条重新进行resize
+					chatWebview.evalJS("resizeScreen()");
+				},
+				wsclose: function() {
+					console.log("websocket连接关闭")
+				},
+				wserror: function() {
+					app.showToast("连接出现异常", "error");
+				}
+			}
 		</script>
 	</body>
 </html>

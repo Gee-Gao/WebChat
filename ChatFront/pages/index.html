@@ -17,7 +17,7 @@
 	<body>
 		<!-- 标题栏 -->
 		<header class="mui-bar mui-bar-nav title">
-			<h1 class="mui-title title-color">" 麻 雀 " 聊 天</h1>
+			<h1 class="mui-title title-color" id="bird_title">" 麻 雀 " 聊 天</h1>
 		</header>
 		<!-- 主体部分 -->
 		<div class="mui-content">
@@ -72,6 +72,8 @@
 			};
 
 			mui.plusReady(function() {
+				//监听网络
+				netChangeSwitch();
 				//设置系统状态栏背景颜色
 				plus.navigator.setStatusBarBackground("#ff4316");
 				//设置系统字体颜色
@@ -112,6 +114,19 @@
 				mui.fire(bird_chatlist, 'refresh');
 				var bird_me = plus.webview.getWebviewById("bird-me.html");
 				mui.fire(bird_me, 'refresh');
+			}
+			//监听网络状态
+			function netChangeSwitch(){
+				document.addEventListener("netchange",function(){
+					//获取网络状态
+					var connrctionStatus = plus.networkinfo.getCurrentType();
+					var bird_title = document.getElementById("bird_title");
+					if(connrctionStatus!=0 && connrctionStatus!=1){
+						bird_title.innerHTML ='" 麻 雀 " 聊 天';
+					}else{
+						bird_title.innerHTML ='" 麻 雀 " 聊 天（网络未连接）';
+					}
+				});
 			}
 		</script>
 	</body>
