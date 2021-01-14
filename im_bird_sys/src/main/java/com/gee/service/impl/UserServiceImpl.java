@@ -1,20 +1,22 @@
 package com.gee.service.impl;
 
+import com.gee.enums.MsgActionEnum;
 import com.gee.enums.MsgSignFlagEnum;
 import com.gee.enums.SearchFriendsStatusEnum;
 import com.gee.mapper.*;
 import com.gee.netty.ChatContent;
+import com.gee.netty.DataContent;
+import com.gee.netty.UserChannelRel;
 import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
 import com.gee.service.UserService;
-import com.gee.utils.FastDFSClient;
-import com.gee.utils.FileUtils;
-import com.gee.utils.QRCodeUtils;
-import com.gee.utils.Sid;
+import com.gee.utils.*;
 import com.gee.vo.FriendsRequestVo;
 import com.gee.vo.MyFriendsVo;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -138,6 +140,16 @@ public class UserServiceImpl implements UserService {
         friendsRequest.setSendUserId(sendUserId);
         friendsRequest.setAcceptUserId(acceptUserId);
         deleteFriendRequest(friendsRequest);
+
+        //获取发送者的通道
+        Channel sendChannel = UserChannelRel.get(sendUserId);
+        if (sendChannel != null) {
+            //使用websocket主动推送请求发起者，更新他的通讯录为最新
+            DataContent dataContent = new DataContent();
+            dataContent.setAction(MsgActionEnum.PULL_FRIEND.type);
+            //消息推送
+            sendChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
+        }
     }
 
     //查询好友列表

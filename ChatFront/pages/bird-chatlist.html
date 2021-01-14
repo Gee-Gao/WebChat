@@ -164,6 +164,14 @@
 				wsmessage: function(e) {
 					console.log(e.data)
 					var dataContent = JSON.parse(e.data);
+					var action = dataContent.action;
+					//如果是拉取好友请求，重新渲染联系人列表
+					if(action == app.PULL_FRIEND){
+						var user = app.getUserGlobalInfo();
+						fetchContactList(user);
+						return false;
+					}
+					//如果不是重新拉取好友列表请求，则获取聊天消息模型，渲染接收到的聊天记录
 					var chatMsg = dataContent.chatContent;
 					var msg = chatMsg.msg;
 					var friendUserId = chatMsg.senderId;
@@ -185,6 +193,23 @@
 				wserror: function(e) {
 					app.showToast("连接出现异常", "error");
 				}
+			}
+
+			//获取好友列表
+			function fetchContactList() {
+				//获取全局用户对象
+				var user = app.getUserGlobalInfo();
+				//请求后台
+				mui.ajax(app.serverUrl + "user/myFriends?userId=" + user.id, {
+					timeout: 10000, //超时时间设置为10秒；
+					success: function(data) {
+						if (data.status == 200) {
+							var contactList = data.data;
+							//将好友列表存入本地缓存中
+							app.setContactList(contactList);
+						}
+					}
+				});
 			}
 		</script>
 	</body>
