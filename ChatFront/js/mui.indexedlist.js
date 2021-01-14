@@ -54,7 +54,7 @@
 			var withoutSearchHeight = (self.box.offsetHeight - self.el.search.offsetHeight) + 'px';
 			self.el.bar.style.height = withoutSearchHeight;
 			self.el.inner.style.height = withoutSearchHeight;
-			var barItemHeight = ((self.el.bar.offsetHeight - 40) / self.el.barItems.length) + 'px';
+			var barItemHeight = ((self.el.bar.offsetHeight - 122) / self.el.barItems.length) + 'px';
 			self.el.barItems.forEach(function(item) {
 				item.style.height = barItemHeight;
 				item.style.lineHeight = barItemHeight;
