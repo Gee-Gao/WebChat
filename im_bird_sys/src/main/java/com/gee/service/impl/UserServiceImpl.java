@@ -1,10 +1,10 @@
 package com.gee.service.impl;
 
+import com.gee.enums.MsgSignFlagEnum;
 import com.gee.enums.SearchFriendsStatusEnum;
-import com.gee.mapper.FriendsRequestMapper;
-import com.gee.mapper.MyFriendsMapper;
-import com.gee.mapper.UserMapper;
-import com.gee.mapper.UserMapperCustom;
+import com.gee.mapper.*;
+import com.gee.netty.ChatContent;
+import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
@@ -39,6 +39,8 @@ public class UserServiceImpl implements UserService {
     private FriendsRequestMapper friendsRequestMapper;
     @Resource
     private UserMapperCustom userMapperCustom;
+    @Resource
+    private ChatMsgMapper chatMsgMapper;
 
 
     //根据用户名判断用户是否存在
@@ -96,6 +98,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<FriendsRequestVo> queryFriendRequestList(String acceptUserId) {
         return userMapperCustom.queryFriendRequestList(acceptUserId);
+    }
+
+    //保存用户聊天消息
+    @Override
+    public String saveMsg(ChatContent chatContent) {
+        ChatMsg chatMsg = new ChatMsg();
+        chatMsg.setId(sid.nextShort());
+        chatMsg.setSendUserId(chatContent.getSenderId());
+        chatMsg.setAcceptUserId(chatContent.getReceiverId());
+        chatMsg.setCreateTime(new Date());
+        chatMsg.setSignFlag(MsgSignFlagEnum.signed.type);
+        chatMsg.setMsg(chatContent.getMsg());
+        chatMsgMapper.insert(chatMsg);
+        return chatMsg.getId();
+    }
+
+    //批量更新签收状态
+    @Override
+    public void updateMsgSigned(List<String> msgList) {
+        userMapperCustom.batchUpdateMsgSigned(msgList);
     }
 
     //处理忽略请求

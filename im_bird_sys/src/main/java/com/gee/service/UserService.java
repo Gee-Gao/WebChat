@@ -1,5 +1,6 @@
 package com.gee.service;
 
+import com.gee.netty.ChatContent;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.User;
 import com.gee.vo.FriendsRequestVo;
@@ -32,4 +33,10 @@ public interface UserService {
 
     //查询好友列表
     List<MyFriendsVo> queryMyFriends(String userId);
+
+    //保存用户聊天消息
+    String saveMsg(ChatContent chatContent);
+
+    //批量更新签收状态
+    void updateMsgSigned(List<String> msgList);
 }

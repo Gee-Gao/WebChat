@@ -6,26 +6,34 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.springframework.stereotype.Component;
-
 @Component
 public class WebSocketServer {
-    public static void main(String[] args) throws InterruptedException {
-        //创建主从线程池
-        EventLoopGroup mainGroup = new NioEventLoopGroup();
-        EventLoopGroup subGroup = new NioEventLoopGroup();
-        try {
-            //创建服务器类
-            ServerBootstrap server = new ServerBootstrap();
-            server.group(mainGroup, subGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new WSServerInitializer());
-            ChannelFuture future = server.bind(8088).sync();
-            future.channel().closeFuture().sync();
-        } finally {
-            mainGroup.shutdownGracefully();
-            subGroup.shutdownGracefully();
+
+    private static class SingletonWSServer {
+        static final WebSocketServer instance = new WebSocketServer();
+    }
+
+    public static WebSocketServer getInstance() {
+        return SingletonWSServer.instance;
+    }
+
+    private EventLoopGroup mainGroup;
+    private EventLoopGroup subGroup;
+    private ServerBootstrap server;
+    private ChannelFuture future;
+    public WebSocketServer() {
+        mainGroup = new NioEventLoopGroup();
+        subGroup = new NioEventLoopGroup();
+        server = new ServerBootstrap();
+        server.group(mainGroup, subGroup)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new WSServerInitializer());
+    }
+
+    public void start() {
+        this.future = server.bind(8088);
+        if (future.isSuccess()) {
+            System.out.println("启动 Netty 成功");
         }
-
-
     }
 }
