@@ -3,6 +3,7 @@ package com.gee.controller;
 import com.gee.bo.UserBo;
 import com.gee.enums.OperatorFriendRequestTypeEnum;
 import com.gee.enums.SearchFriendsStatusEnum;
+import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.User;
 import com.gee.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -27,11 +29,22 @@ public class UserController {
     @Resource
     private FastDFSClient fastDFSClient;
 
+    //获取未签收消息列表
+    @GetMapping("getUnReadMsgList")
+    public IWdzlJSONResult getUnReadMsgList(String acceptUserId) {
+        //数据校验
+        if (StringUtils.isBlank(acceptUserId))
+            return IWdzlJSONResult.errorMsg("用户id为空");
+        //根据接收者id查找未签收的消息
+        List<ChatMsg> unReadMsgList = userService.getUnReadMsgList(acceptUserId);
+        return IWdzlJSONResult.ok(unReadMsgList);
+    }
+
     //好友列表查询
     @GetMapping("myFriends")
     public IWdzlJSONResult myFriends(String userId) {
         //数据校验
-        if(StringUtils.isBlank(userId))
+        if (StringUtils.isBlank(userId))
             return IWdzlJSONResult.errorMsg("用户id为空");
         //查询好友列表并返回
         return IWdzlJSONResult.ok(userService.queryMyFriends(userId));

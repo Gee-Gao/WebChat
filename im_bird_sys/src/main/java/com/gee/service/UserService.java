@@ -1,6 +1,7 @@
 package com.gee.service;
 
 import com.gee.netty.ChatContent;
+import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.User;
 import com.gee.vo.FriendsRequestVo;
@@ -39,4 +40,7 @@ public interface UserService {
 
     //批量更新签收状态
     void updateMsgSigned(List<String> msgList);
+
+    //获取未签收的消息列表
+    List<ChatMsg> getUnReadMsgList(String acceptUserId);
 }

@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         chatMsg.setSendUserId(chatContent.getSenderId());
         chatMsg.setAcceptUserId(chatContent.getReceiverId());
         chatMsg.setCreateTime(new Date());
-        chatMsg.setSignFlag(MsgSignFlagEnum.signed.type);
+        chatMsg.setSignFlag(MsgSignFlagEnum.unsign.type);
         chatMsg.setMsg(chatContent.getMsg());
         chatMsgMapper.insert(chatMsg);
         return chatMsg.getId();
@@ -183,5 +183,11 @@ public class UserServiceImpl implements UserService {
         user.setQrcode(qrcodeUrl);
         userMapper.insert(user);
         return user;
+    }
+
+    //获取未签收的消息列表
+    @Override
+    public List<ChatMsg> getUnReadMsgList(String acceptUserId) {
+        return chatMsgMapper.getUnReadMsgListByAcceptUid(acceptUserId);
     }
 }

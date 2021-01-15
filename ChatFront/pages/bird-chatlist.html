@@ -196,7 +196,8 @@
 					//构建dataContent
 					var dataContent = new app.DataContent(app.CONNECT, chatMsg, null);
 					CHAT.chat(JSON.stringify(dataContent));
-
+					//每次建立连接之后，批量签收消息
+					fetchUnReadMsg();
 				},
 				wsmessage: function(e) {
 					var dataContent = JSON.parse(e.data);
@@ -241,6 +242,12 @@
 				},
 				wserror: function(e) {
 					app.showToast("连接出现异常", "error");
+				},
+				signMsgList: function(unSignedMsgIds) {
+					//构建批量签收对象
+					var dataContent = new app.DataContent(app.SIGNED, null, unSignedMsgIds);
+					//发送批量签收请求
+					CHAT.chat(JSON.stringify(dataContent))
 				}
 			}
 
@@ -292,6 +299,41 @@
 							var contactList = data.data;
 							//将好友列表存入本地缓存中
 							app.setContactList(contactList);
+						}
+					}
+				});
+			}
+			//每次重连后获取未签收消息
+			function fetchUnReadMsg() {
+				var user = app.getUserGlobalInfo();
+				var msgIds = ",";
+				mui.ajax(app.serverUrl + "/user/getUnReadMsgList?acceptUserId=" + user.id, {
+					timeout: 10000,
+					success: function(data) {
+						if (data.status == 200) {
+							//获取未签收消息列表的数据
+							var unReadMsgList = data.data;
+							console.log("未读消息：" + JSON.stringify(unReadMsgList));
+
+							//1. 保存聊天记录到本地缓存
+							//2. 保存聊天快照到本地缓存
+							//3. 对这些未签收的消息进行批量签收
+							for (var i = 0; i < unReadMsgList.length; i++) {
+								//提取单个消息记录
+								var msgObj = unReadMsgList[i];
+								console.log(JSON.stringify(msgObj))
+								//逐条将聊天记录存入本地缓存中
+								app.saveUserChatHistory(msgObj.acceptUserId, msgObj.sendUserId, msgObj.msg, 2);
+								//逐条将聊天快照存入本地缓存中
+								app.saveUserChatSnapshot(msgObj.acceptUserId, msgObj.sendUserId, msgObj.msg, false);
+								//获取消息id并进行拼接，字符串中间用逗号隔开
+								msgIds += msgObj.id;
+								msgIds += ",";
+							}
+							//调用批量签收的函数
+							CHAT.signMsgList(msgIds);
+							//渲染快照到列表进行展示
+							loadingChatSnapshot();
 						}
 					}
 				});
