@@ -118,6 +118,8 @@
 					wsWebview.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
 					//保存聊天历史记录到本地缓存
 					app.saveUserChatHistory(me.id, friendUserId, msg_text_content, 1);
+					//保存聊天快照到本地缓存
+					app.saveUserChatSnapshot(me.id, friendUserId, msg_text_content, true);
 				});
 			});
 			//初始化聊天记录

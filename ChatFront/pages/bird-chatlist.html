@@ -15,6 +15,19 @@
 				height: 100%;
 				overflow: auto;
 			}
+			.red-point{
+				position: relative;
+			}
+			.red-point::after{
+				content: "";
+				border: 10px solid red;
+				border-radius: 10px;
+				position: absolute;
+				z-index: 10;
+				right: -900%;
+				margin-right: -10px;
+				margin-top: 50%;
+			}
 		</style>
 	</head>
 
@@ -26,8 +39,9 @@
 
 		<!-- 主体部分 -->
 		<div class="mui-content">
-			<ul class="mui-table-view" id="ul_friend_request_list" style="margin-bottom: 10px;">
-			</ul>
+			<ul class="mui-table-view" id="ul_friend_request_list" style="margin-bottom: 10px;"></ul>
+			<ul id="ul_chatSnapshot" class="mui-table-view"></ul>
+
 		</div>
 
 		<script src="../js/app.js"></script>
@@ -113,7 +127,29 @@
 					loadingFriendsRequest();
 					CHAT.init();
 				});
-				CHAT.init();
+
+				//为快照列表批量绑定触事件
+				mui("#ul_chatSnapshot").on("tap", ".chat-with-friend", function(e) {
+					var friendUserId = this.getAttribute("friendUserId");
+					var friendNickname = this.getAttribute("friendNickname");
+					var friendFaceImage = this.getAttribute("friendFaceImage");
+					//打开聊天页面
+					mui.openWindow({
+						url: "bird-chatting.html",
+						id: "bird-chatting" + friendUserId, //每个好友的聊天页面都是一一对应的
+						extras: {
+							friendUserId: friendUserId,
+							friendNickname: friendNickname,
+							friendFaceImage: friendFaceImage
+						}
+					});
+					var me = app.getUserGlobalInfo();
+					//标记未读状态为已读
+					app.readUserChatSnapShot(me.id, friendUserId);
+					//渲染快照到列表进行展示
+					loadingChatSnapshot();
+				});
+
 			})
 
 			window.CHAT = {
@@ -145,7 +181,8 @@
 						CHAT.init();
 						setTimeout("CHAT.reChat('" + msg + "')", 1000)
 					}
-
+					//渲染快照
+					loadingChatSnapshot();
 				},
 				//socket重连机制
 				reChat: function(msg) {
@@ -162,7 +199,6 @@
 
 				},
 				wsmessage: function(e) {
-					console.log(e.data)
 					var dataContent = JSON.parse(e.data);
 					var action = dataContent.action;
 					//如果是拉取好友请求，重新渲染联系人列表
@@ -178,10 +214,15 @@
 					var myId = chatMsg.receiverId;
 
 					var chatWebview = plus.webview.getWebviewById("bird-chatting" + friendUserId);
+					//设置消息状态默认为已读
+					var isRead = true;
 					if (chatWebview != null) {
 						chatWebview.evalJS("receiveMsg('" + msg + "')");
 						//将页面的滚动条重新进行resize
 						chatWebview.evalJS("resizeScreen()");
+					} else {
+						//用户不在好友聊天页面，标记消息为未读状态
+						isRead = false;
 					}
 
 					//接收到消息之后，对消息进行签收
@@ -189,13 +230,53 @@
 					CHAT.chat(JSON.stringify(dataContentSign));
 
 					//保存聊天记录到本地缓存
-					app.saveUserChatHistory(myId, friendUserId, msg, 2)
+					app.saveUserChatHistory(myId, friendUserId, msg, 2);
+					//保存聊天快照到本地缓存
+					app.saveUserChatSnapshot(myId, friendUserId, msg, isRead);
+					//渲染快照
+					loadingChatSnapshot();
 				},
 				wsclose: function() {
 					console.log("websocket连接关闭");
 				},
 				wserror: function(e) {
 					app.showToast("连接出现异常", "error");
+				}
+			}
+
+			//渲染聊天快照
+			function loadingChatSnapshot() {
+				var user = app.getUserGlobalInfo();
+				var chatSnapshot = app.getUserChatSnapshot(user.id);
+				var ul_chatSnapshot = document.getElementById("ul_chatSnapshot");
+				ul_chatSnapshot.innerHTML = "";
+				var chatItemHtml = "";
+				for (var i = 0; i < chatSnapshot.length; i++) {
+					var chatItem = chatSnapshot[i];
+					var friendId = chatItem.friendId;
+					//根据friendId 从本地联系人列表的缓存中获取相关信息
+					var friend = app.getFriendFromContactList(friendId);
+					//判断消息是否已读
+					var isRead = chatItem.isRead;
+					var readHtmlBefore = "";
+					var readHtmlAfter = "";
+					if (!isRead) {
+						readHtmlBefore = '<span class="red-point">';
+						readHtmlAfter = '</span>';
+					}
+
+					chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.friendNickname +
+							'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
+							'<div class="mui-slider-right mui-disabled">' +
+							'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
+							'</div>' +
+							'<div class="mui-slider-handle mui-media-body">' +
+							'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
+							readHtmlBefore + friend.friendNickname + readHtmlAfter +
+							'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
+							'</div>' +
+							'</li>';
+					ul_chatSnapshot.insertAdjacentHTML('beforeend', chatItemHtml);
 				}
 			}
 
