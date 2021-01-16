@@ -151,15 +151,15 @@
 				});
 
 				//左滑删除聊天快照和记录
-				mui("#ul_chatSnapshot").on("tap","#link_delChatRecord",function(){
+				mui("#ul_chatSnapshot").on("tap", "#link_delChatRecord", function() {
 					var me = this;
 					var user = app.getUserGlobalInfo();
 					//获取朋友id
 					var friendUserId = me.getAttribute("friendUserId");
 					//删除聊天记录
-					app.deleteUserChatHistory(user.id,friendUserId);
+					app.deleteUserChatHistory(user.id, friendUserId);
 					//删除聊天快照
-					app.deleteUserChatSnapshot(user.id,friendUserId);
+					app.deleteUserChatSnapshot(user.id, friendUserId);
 					//移除当前用户操作的li节点
 					var li = me.parentNode.parentNode;
 					var ul_chatSnapshot = document.getElementById("ul_chatSnapshot");
@@ -214,6 +214,9 @@
 					CHAT.chat(JSON.stringify(dataContent));
 					//每次建立连接之后，批量签收消息
 					fetchUnReadMsg();
+					//定时发送心跳包
+					setInterval("CHAT.keepLive()",10000);
+
 				},
 				wsmessage: function(e) {
 					var dataContent = JSON.parse(e.data);
@@ -264,6 +267,15 @@
 					var dataContent = new app.DataContent(app.SIGNED, null, unSignedMsgIds);
 					//发送批量签收请求
 					CHAT.chat(JSON.stringify(dataContent))
+				},
+				keepLive: function() {
+					//构建心跳对象
+					var dataContent = new app.DataContent(app.KEEPALIVE,null,null);
+					//发送心跳包
+					CHAT.chat(JSON.stringify(dataContent));
+					//需要定时执行的函数
+					fetchUnReadMsg();
+					fetchContactList();
 				}
 			}
 
