@@ -78,6 +78,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 userService.updateMsgSigned(msgIdsList);
             }
         }
+        //如果是心跳类型的消息，不做处理，
+        else if(MsgActionEnum.KEEPALIVE.type == action){}
     }
 
     @Override

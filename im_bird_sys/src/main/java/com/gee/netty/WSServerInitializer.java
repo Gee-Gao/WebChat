@@ -7,6 +7,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
@@ -18,8 +19,9 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
         //在http上有一些数据流产生，有大有小，我们对其进行处理，既然如此，我们需要使用netty 对下数据流写 提供支持，这个类叫：ChunkedWriteHandler
         pipeline.addLast(new ChunkedWriteHandler());
         //对httpMessage 进行聚合处理，聚合成request或 response
-        pipeline.addLast(new HttpObjectAggregator(1024*64));
-
+        pipeline.addLast(new HttpObjectAggregator(1024 * 64));
+        //添加空闲状态监测
+        pipeline.addLast(new IdleStateHandler(20,20,60));
         /**
          * 本handler 会帮你处理一些繁重复杂的事情
          * 会帮你处理握手动作：handshaking（close、ping、pong） ping+pong = 心跳
@@ -29,5 +31,7 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
 
         //自定义的handler
         pipeline.addLast(new ChatHandler());
+        //自定义的空闲状态检测的handler
+        pipeline.addLast(new HeartBeatHandler());
     }
 }
