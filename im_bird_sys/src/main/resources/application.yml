@@ -7,7 +7,7 @@ spring:
     name: im_bird_sys
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/im_bird_sys?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://gaoyunqiang.top:3306/im_bird_sys?serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     filters: stat    #监控统计
