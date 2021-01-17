@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -126,7 +127,16 @@ public class UserController {
     public IWdzlJSONResult uploadAvatar(@RequestBody UserBo userBo) throws Exception {
         //获取前端传过来的base64字符串，然后转为文件对象进行上传
         String faceData = userBo.getFaceData();
-        String userFacePath = "D:/avatar/" + userBo.getUserId() + "userFaceBase64.png";
+
+        //获取项目根路径，并生成头像上传临时路径
+        String path = this.getClass().getResource("/").getPath().substring(1) + "avatar/";
+
+        File existsFile = new File(path);
+        if (!existsFile.exists()) {
+            existsFile.mkdirs();
+        }
+
+        String userFacePath = path + userBo.getUserId() + "userFaceBase64.png";
         //调用FileUtils将userFacePath转为文件对象
         FileUtils.base64ToFile(userFacePath, faceData);
         MultipartFile file = FileUtils.fileToMultipart(userFacePath);

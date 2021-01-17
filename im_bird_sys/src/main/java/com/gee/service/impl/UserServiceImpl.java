@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -169,9 +170,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User insert(User user) {
-        user.setId(sid.nextShort());
         //为每一个用户生成唯一二维码
-        String qrCodePath = "D:/qrcode/user" + user.getId() + "qrcode.png";
+        user.setId(sid.nextShort());
+
+        //获取项目根路径，并生成二维码上传临时路径
+        String path = this.getClass().getResource("/").getPath().substring(1) + "qrcode";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        String qrCodePath = path + "/user" + user.getId() + "qrcode.png";
         qrCodeUtils.createQRCode(qrCodePath, "bird_qrcode:" + user.getUsername());
         MultipartFile qrcodeFile = FileUtils.fileToMultipart(qrCodePath);
         String qrcodeUrl = null;
