@@ -36,8 +36,13 @@
 
 		<footer>
 			<div class="footer-center">
-				<textarea id='msg-text' type="text" class='input-text'></textarea>
+				<div class="mui-input-row">
+					<textarea id="msg-text" class="mui-input-speech mui-input-clear"></textarea>
+				</div>
 			</div>
+
+			<!-- <textarea id='msg-text' type="text" class='input-text mui-input-speech mui-input-clear'></textarea> -->
+
 			<label class="footer-right">
 				<button type="button" class="mui-btn mui-btn-grey" id="send">发送</button>
 			</label>
@@ -49,6 +54,9 @@
 			var friendUserId;
 			var friendNickname;
 			var friendFaceImage;
+			mui.ready(function() {
+				mui('.mui-input-row textarea').input();
+			});
 			mui.plusReady(function() {
 				//获取全局用户信息
 				var me = app.getUserGlobalInfo();
