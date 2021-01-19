@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -23,7 +22,7 @@
 				bottom: 0px;
 				background: #000000;
 			}
-			
+
 		</style>
 	</head>
 
@@ -71,7 +70,11 @@
 					$image.attr('src', path);
 					faceCutter();
 				}, function(e) {
-					mui.openWindow("index.html", "index.html");
+					if(!e){
+						mui.openWindow("index.html", "index.html");
+					}else{
+						mui.openWindow("../../pages/myface.html", "myface.html");
+					}
 				}, {
 					filter: "image"
 				});
@@ -87,7 +90,7 @@
 						var base64Url = result.toDataURL();
 						// 上传头像
 						var user = app.getUserGlobalInfo();
-				
+
 						// 与后端联调
 						mui.ajax(app.serverUrl + "/user/uploadFaceBase64", {
 							data: {
@@ -143,7 +146,5 @@
 				plus.nativeUI.closeWaiting();
 			}
 		</script>
-
 	</body>
-
 </html>
