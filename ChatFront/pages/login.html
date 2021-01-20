@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<script src="../js/mui.min.js"></script>
-
 		<link rel="stylesheet" type="text/css" href="../css/registLogin/util.css">
 		<link rel="stylesheet" type="text/css" href="../css/registLogin/main.css">
-
-		
 
 		<style>
 			.p-t-85 {
 				padding-top: 10px;
 			}
-			
+
 			.p-b-70 {
 				padding-bottom: 35px;
 			}
-			
+
 			.m-t-85 {
 				margin-top: 15px;
 			}
-			
+
 			.container-login100 {
 				padding: 25px;
 			}
 			/*toast信息提示*/
-			
+
 			.mui-toast-container {
 				bottom: 50% !important;
 			}
@@ -69,7 +65,7 @@
 							</button>
 						</div>
 					</form>
-					
+
 				</div>
 			</div>
 		</div>
@@ -84,11 +80,11 @@
 					// 页面跳转
 					mui.openWindow("index.html", "index.html");
 				}
-				
-			    var userform = document.getElementById("userform");//获取表单对象
+
+				var userform = document.getElementById("userform");//获取表单对象
 				var username = document.getElementById("username");//用户名
 				var password = document.getElementById("password");//密码
-				
+
 				userform.addEventListener("submit",function(e){
 					// 判断用户名是否为空，如果为空则让其获得焦点
 					if (!app.isNotNull(username.value)) {
@@ -104,8 +100,8 @@
 						if (username.value.length > 12) {
 							app.showToast("用户名不能超过12位", "error");
 							return false;
-						} else if (password.value.length > 6) {
-							app.showToast("密码不能超过6位", "error");
+						} else if (password.value.length > 12) {
+							app.showToast("密码不能超过12位", "error");
 							return false;
 						}
 						//获取每台设备上的唯一cid
@@ -118,7 +114,7 @@
 							},
 							type:'post',//HTTP请求类型
 							timeout:5000,//超时时间设置为5秒；
-							success:function(data){ 
+							success:function(data){
 								if(data.status==200){//若服务器中成功返回了非空的数据,则表明了账户与密码验证已经成功
 									var userInfo = data.data;//获取json对象中的用户对象
 									app.setUserGlobalInfo(userInfo);
@@ -144,5 +140,4 @@
 		</script>
 
 	</body>
-
 </html>
