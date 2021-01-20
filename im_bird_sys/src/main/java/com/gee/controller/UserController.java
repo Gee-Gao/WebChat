@@ -30,6 +30,28 @@ public class UserController {
     @Resource
     private FastDFSClient fastDFSClient;
 
+    @PostMapping("changePassword")
+    public IWdzlJSONResult changePassword(User oldUser, String newPassword) {
+        //数据校验
+        if (oldUser == null)
+            return IWdzlJSONResult.errorMsg("原密码不能为空");
+        if (StringUtils.isBlank(newPassword))
+            return IWdzlJSONResult.errorMsg("新密码不能为空");
+        //根据用户名获取原密码
+        User user = userService.queryUserNameIsExit(oldUser.getUsername());
+        if (user == null)
+            return IWdzlJSONResult.errorMsg("查询不到对应的用户");
+        else {
+            if (!user.getPassword().equals(MD5Utils.getPwd(oldUser.getPassword()))) {
+                return IWdzlJSONResult.errorMsg("原密码不正确");
+            } else {
+                user.setPassword(MD5Utils.getPwd(newPassword));
+                userService.updateUserInfo(user);
+                return IWdzlJSONResult.ok();
+            }
+        }
+    }
+
     //获取未签收消息列表
     @GetMapping("getUnReadMsgList")
     public IWdzlJSONResult getUnReadMsgList(String acceptUserId) {

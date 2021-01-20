@@ -43,6 +43,17 @@
 						</div>
 					</a>
 				</li>
+
+				<li class="mui-table-view-cell mui-media">
+					<a id="link_password" href="javascript:;">
+						<span class="mui-icon mui-icon-arrowright  mui-pull-right" style="line-height: 42px;color:dimgray;margin-left: 3px;"></span>
+						<span id="span_password" class="mui-pull-right" style="line-height:42px;color:dimgray;font-size:16px;"></span>
+						<div class="mui-media-body font-style">
+							修改密码
+						</div>
+					</a>
+				</li>
+
 				<li class="mui-table-view-cell mui-media">
 					<a id="link_my_qrcode" href="javascript:;">
 						<span class="mui-icon mui-icon-arrowright  mui-pull-right" style="line-height: 42px;color:dimgray;margin-left: 3px;"></span>
@@ -82,6 +93,12 @@
 				window.addEventListener("refresh",function(){
 					refreshUserInfo();
 				});
+
+				//修改密码
+				document.getElementById("link_password").addEventListener("tap",function(){
+					mui.openWindow("change-password.html", "change-password.html")
+				})
+
 
 				//头像
 				document.getElementById("link_myface").addEventListener("tap", function() {
