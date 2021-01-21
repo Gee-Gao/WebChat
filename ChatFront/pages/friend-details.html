@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/header.css" rel="stylesheet" />
+		<style type="text/css">
+			html {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 标题栏 -->
+		<header class="mui-bar mui-bar-nav title">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title title-color">好友信息</h1>
+		</header>
+
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;" id="link_myface">
+						<img id="img_my_face" class="mui-media-object mui-pull-right" style=" margin-right: 28px;" src="../images/face-cat.jpg">
+						<div class="mui-media-body font-style">
+							头像
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a id="link_nickname" href="javascript:;">
+						<span id="span_nickname" class="mui-pull-right" style="line-height:42px;color:dimgray;font-size:16px; margin-right: 28px;">Gee</span>
+						<div class="mui-media-body font-style">
+							昵称
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<span id="span_username" class="mui-pull-right" style="color:dimgray;line-height:42px;font-size:16px; margin-right: 28px;">123</span>
+						<div class="mui-media-body font-style">
+							账号
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				//获取页面参数
+				var friendUserId = plus.webview.currentWebview().friendUserId;
+				//请求后台获取好友信息
+				mui.ajax(app.serverUrl + "user/friendDetails?friendUserId=" + friendUserId, {
+					timeout: 10000, //超时时间设置为10秒；
+					success: function(data) {
+						if (data.status == 200) {
+							document.getElementById("img_my_face").src=app.imgServerUrl + data.data.faceImage;;
+							document.getElementById("span_nickname").innerHTML=data.data.nickname;
+							document.getElementById("span_username").innerHTML=data.data.username;
+						}
+					}
+				});
+			})
+		</script>
+	</body>
+</html>

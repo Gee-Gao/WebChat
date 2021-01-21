@@ -13,6 +13,9 @@ public interface UserService {
     //根据用户名判断用户是否存在
     User queryUserNameIsExit(String username);
 
+    //根据id查找用户
+    User queryUserById(String userId);
+
     User insert(User user);
 
     User updateUserInfo(User user);

@@ -30,6 +30,16 @@ public class UserController {
     @Resource
     private FastDFSClient fastDFSClient;
 
+    //获取好友信息
+    @GetMapping("friendDetails")
+    public IWdzlJSONResult friendDetails(String friendUserId) {
+        User user = userService.queryUserById(friendUserId);
+        if (user == null)
+            return IWdzlJSONResult.errorMsg("查询不到用户信息");
+        else
+            return IWdzlJSONResult.ok(user);
+    }
+
     @PostMapping("changePassword")
     public IWdzlJSONResult changePassword(User oldUser, String newPassword) {
         //数据校验

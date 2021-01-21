@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     @Resource
     private ChatMsgMapper chatMsgMapper;
 
+    //根据id查找用户
+    @Override
+    public User queryUserById(String userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
 
     //根据用户名判断用户是否存在
     @Override
