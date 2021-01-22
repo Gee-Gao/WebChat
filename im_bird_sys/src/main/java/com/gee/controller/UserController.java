@@ -217,7 +217,7 @@ public class UserController {
     //用户登录注册一体化方法
     @PostMapping("/registerOrLogin")
     public IWdzlJSONResult registerOrLogin(User user) {
-        User userResult = userService.queryUserNameIsExit(user.getUsername());
+        User userResult = userService.queryUserNameIsExit(user.getUsername().trim());
 
         if (userResult != null) {  //用户存在
             //判断密码是否正确
@@ -230,6 +230,7 @@ public class UserController {
             for (int i = 0; i < 8; i++) {
                 stringBuilder.append(random.nextInt(10));
             }
+            user.setUsername(user.getUsername().trim());
             user.setNickname("麻雀用户: " + stringBuilder.toString());
             user.setFaceImage("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268_150x150.png");
             user.setFaceImageBig("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268.png");
