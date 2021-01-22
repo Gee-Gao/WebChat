@@ -7,6 +7,8 @@ public class MyFriends {
 
     private String myFriendUserId;
 
+    private String remark;
+
     public String getId() {
         return id;
     }
@@ -29,5 +31,23 @@ public class MyFriends {
 
     public void setMyFriendUserId(String myFriendUserId) {
         this.myFriendUserId = myFriendUserId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    @Override
+    public String toString() {
+        return "MyFriends{" +
+                "id='" + id + '\'' +
+                ", myUserId='" + myUserId + '\'' +
+                ", myFriendUserId='" + myFriendUserId + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 }

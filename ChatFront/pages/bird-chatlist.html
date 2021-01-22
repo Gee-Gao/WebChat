@@ -136,7 +136,7 @@
 					//打开聊天页面
 					mui.openWindow({
 						url: "bird-chatting.html",
-						id: "bird-chatting" + friendUserId, //每个好友的聊天页面都是一一对应的
+						id: "bird-chatting" + friendUserId+Math.random(), //每个好友的聊天页面都是一一对应的
 						extras: {
 							friendUserId: friendUserId,
 							friendNickname: friendNickname,
@@ -215,7 +215,7 @@
 					//每次建立连接之后，批量签收消息
 					fetchUnReadMsg();
 					//定时发送心跳包
-					setInterval("CHAT.keepLive()",10000);
+					setInterval("CHAT.keepLive()", 10000);
 
 				},
 				wsmessage: function(e) {
@@ -270,7 +270,7 @@
 				},
 				keepLive: function() {
 					//构建心跳对象
-					var dataContent = new app.DataContent(app.KEEPALIVE,null,null);
+					var dataContent = new app.DataContent(app.KEEPALIVE, null, null);
 					//发送心跳包
 					CHAT.chat(JSON.stringify(dataContent));
 					//需要定时执行的函数
@@ -278,39 +278,54 @@
 					fetchContactList();
 				}
 			}
-
-			//渲染聊天快照
+			//渲染聊天快照的函数
 			function loadingChatSnapshot() {
 				var user = app.getUserGlobalInfo();
-				var chatSnapshot = app.getUserChatSnapshot(user.id);
+				var chatSnapshotList = app.getUserChatSnapshot(user.id);
 				var ul_chatSnapshot = document.getElementById("ul_chatSnapshot");
 				ul_chatSnapshot.innerHTML = "";
 				var chatItemHtml = "";
-				for (var i = 0; i < chatSnapshot.length; i++) {
-					var chatItem = chatSnapshot[i];
+				for (var i = 0; i < chatSnapshotList.length-1; i++) {
+					var chatItem = chatSnapshotList[i];
 					var friendId = chatItem.friendId;
-					//根据friendId 从本地联系人列表的缓存中获取相关信息
+					//根据friendId  从本地联系人列表的缓存中获取相关的信息
 					var friend = app.getFriendFromContactList(friendId);
-					//判断消息是否已读
+					//判断消息的已读或未读状态
 					var isRead = chatItem.isRead;
-					var readHtmlBefore = "";
-					var readHtmlAfter = "";
+					var readHtmlBefore = '';
+					var readHtmlAfter = '';
 					if (!isRead) {
 						readHtmlBefore = '<span class="red-point">';
 						readHtmlAfter = '</span>';
 					}
 
-					chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.friendNickname +
-							'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
-							'<div class="mui-slider-right mui-disabled">' +
-							'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
-							'</div>' +
-							'<div class="mui-slider-handle mui-media-body">' +
-							'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
-							readHtmlBefore + friend.friendNickname + readHtmlAfter +
-							'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
-							'</div>' +
-							'</li>';
+					if(friend.remark==null){
+						chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.friendNickname +
+								'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
+								'<div class="mui-slider-right mui-disabled">' +
+								'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
+								'</div>' +
+								'<div class="mui-slider-handle mui-media-body">' +
+								'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
+								readHtmlBefore + friend.friendNickname + readHtmlAfter +
+								'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
+								'</div>' +
+								'</li>';
+					}else{
+						chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.remark +
+								'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
+								'<div class="mui-slider-right mui-disabled">' +
+								'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
+								'</div>' +
+								'<div class="mui-slider-handle mui-media-body">' +
+								'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
+								readHtmlBefore + friend.remark + readHtmlAfter +
+								'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
+								'</div>' +
+								'</li>';
+					}
+
+
 					ul_chatSnapshot.insertAdjacentHTML('beforeend', chatItemHtml);
 				}
 			}
@@ -348,7 +363,6 @@
 							for (var i = 0; i < unReadMsgList.length; i++) {
 								//提取单个消息记录
 								var msgObj = unReadMsgList[i];
-								console.log(JSON.stringify(msgObj))
 								//逐条将聊天记录存入本地缓存中
 								app.saveUserChatHistory(msgObj.acceptUserId, msgObj.sendUserId, msgObj.msg, 2);
 								//逐条将聊天快照存入本地缓存中

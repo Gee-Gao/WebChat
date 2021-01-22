@@ -16,7 +16,7 @@
 	<body>
 		<!-- 标题栏 -->
 		<header class="mui-bar mui-bar-nav title">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;" id="back"></a>
 			<h1 class="mui-title title-color">好友信息</h1>
 		</header>
 
@@ -31,6 +31,14 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<span id="span_username" class="mui-pull-right" style="color:dimgray;line-height:42px;font-size:16px; margin-right: 28px;">123</span>
+						<div class="mui-media-body font-style">
+							账号
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
 					<a id="link_nickname" href="javascript:;">
 						<span id="span_nickname" class="mui-pull-right" style="line-height:42px;color:dimgray;font-size:16px; margin-right: 28px;">Gee</span>
 						<div class="mui-media-body font-style">
@@ -38,11 +46,12 @@
 						</div>
 					</a>
 				</li>
-				<li class="mui-table-view-cell mui-media">
+				<li class="mui-table-view-cell mui-media" id="link_change_remark">
 					<a href="javascript:;">
-						<span id="span_username" class="mui-pull-right" style="color:dimgray;line-height:42px;font-size:16px; margin-right: 28px;">123</span>
+						<span class="mui-icon mui-icon-arrowright  mui-pull-right" style="line-height: 42px;color:dimgray;margin-left: 3px;"></span>
+						<span id="span_remark" class="mui-pull-right" style="color:dimgray;line-height:42px;font-size:16px;"></span>
 						<div class="mui-media-body font-style">
-							账号
+							备注
 						</div>
 					</a>
 				</li>
@@ -52,17 +61,69 @@
 		<script src="../js/app.js"></script>
 		<script type="text/javascript">
 			mui.init()
+			var remark = "";
+			var friendUserId;
+			var friendNickname;
+			var friendFaceImage;
+
+			var user;
+			//设置返回按钮事件
+			document.getElementById("back").addEventListener("tap", function() {
+				mui.openWindow({
+					url: "bird-chatting.html",
+					id: "bird-chatting" + friendUserId + Math.random(),
+					extras: {
+						friendUserId: friendUserId,
+						friendNickname: friendNickname,
+						friendFaceImage: friendFaceImage
+					}
+				});
+			})
+			//为备注添加事件
+			var link_change_remark = document.getElementById("link_change_remark");
+			link_change_remark.addEventListener("tap", function() {
+				mui.openWindow({
+					url: "change-remark.html",
+					id: "change-remark.html" + Math.random(),
+					extras: {
+						remark: remark,
+						friendUserId: friendUserId,
+						myUserId: user.id,
+						friendNickname:friendNickname,
+						friendFaceImage:friendFaceImage
+					}
+				});
+			})
 			mui.plusReady(function() {
 				//获取页面参数
-				var friendUserId = plus.webview.currentWebview().friendUserId;
+				var currentWebview = plus.webview.currentWebview();
+				friendUserId = currentWebview.friendUserId;
+				friendNickname = currentWebview.friendNickname;
+				friendFaceImage = currentWebview.friendFaceImage;
+				remark = "";
+				//获取全局用户信息
+				user = app.getUserGlobalInfo();
 				//请求后台获取好友信息
 				mui.ajax(app.serverUrl + "user/friendDetails?friendUserId=" + friendUserId, {
 					timeout: 10000, //超时时间设置为10秒；
 					success: function(data) {
 						if (data.status == 200) {
-							document.getElementById("img_my_face").src=app.imgServerUrl + data.data.faceImage;;
-							document.getElementById("span_nickname").innerHTML=data.data.nickname;
-							document.getElementById("span_username").innerHTML=data.data.username;
+							document.getElementById("img_my_face").src = app.imgServerUrl + data.data.faceImage;;
+							document.getElementById("span_nickname").innerHTML = data.data.nickname;
+							document.getElementById("span_username").innerHTML = data.data.username;
+							//获取最新的备注
+							var friendUserId = plus.webview.currentWebview().friendUserId;
+							//获取全局用户信息
+							var user = app.getUserGlobalInfo();
+							mui.ajax(app.serverUrl + "user/getFriendRemark?myFriendUserId=" + friendUserId + "&myUserId=" + user.id, {
+								timeout: 10000, //超时时间设置为10秒；
+								success: function(data) {
+									if (data.status == 200) {
+										document.getElementById("span_remark").innerHTML = data.data.remark;
+									}
+								}
+							});
+
 						}
 					}
 				});

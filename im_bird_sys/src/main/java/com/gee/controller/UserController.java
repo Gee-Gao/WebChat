@@ -1,17 +1,20 @@
 package com.gee.controller;
 
 import com.gee.bo.UserBo;
+import com.gee.enums.MsgActionEnum;
 import com.gee.enums.OperatorFriendRequestTypeEnum;
 import com.gee.enums.SearchFriendsStatusEnum;
+import com.gee.netty.DataContent;
+import com.gee.netty.UserChannelRel;
 import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
+import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
 import com.gee.service.UserService;
-import com.gee.utils.FastDFSClient;
-import com.gee.utils.FileUtils;
-import com.gee.utils.IWdzlJSONResult;
-import com.gee.utils.MD5Utils;
+import com.gee.utils.*;
 import com.gee.vo.UserVo;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,28 @@ public class UserController {
     private UserService userService;
     @Resource
     private FastDFSClient fastDFSClient;
+
+    //获取好友备注
+    @GetMapping("getFriendRemark")
+    public IWdzlJSONResult getFriendRemark(MyFriends myFriends) {
+        return IWdzlJSONResult.ok(userService.getFriendRemark(myFriends));
+    }
+
+    //修改好友备注
+    @PostMapping("changeRemark")
+    public IWdzlJSONResult changeRemark(MyFriends myFriends) {
+        userService.changeRemark(myFriends);
+        //获取发送者的通道
+        Channel sendChannel = UserChannelRel.get(myFriends.getMyUserId());
+        if (sendChannel != null) {
+            //使用websocket主动推送请求发起者，更新他的通讯录为最新
+            DataContent dataContent = new DataContent();
+            dataContent.setAction(MsgActionEnum.PULL_FRIEND.type);
+            //消息推送
+            sendChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
+        }
+        return IWdzlJSONResult.ok();
+    }
 
     //获取好友信息
     @GetMapping("friendDetails")

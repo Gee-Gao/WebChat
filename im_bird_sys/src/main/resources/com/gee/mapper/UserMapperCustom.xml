@@ -18,7 +18,8 @@
         select u.id         as friendUserId,
                u.username   as friendUsername,
                u.face_image as friendFaceImage,
-               u.nickname   as friendNickname
+               u.nickname   as friendNickname,
+               mf.remark    as remark
         from my_friends mf
                  left join t_users u
                            on u.id = mf.my_friend_user_id

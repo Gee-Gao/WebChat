@@ -45,6 +45,18 @@ public class UserServiceImpl implements UserService {
     @Resource
     private ChatMsgMapper chatMsgMapper;
 
+    //获取好友备注
+    @Override
+    public MyFriends getFriendRemark(MyFriends myFriends) {
+        return myFriendsMapper.selectOneByExample(myFriends);
+    }
+
+    //修改好友备注
+    @Override
+    public void changeRemark(MyFriends myFriends) {
+        myFriendsMapper.changeRemark(myFriends);
+    }
+
     //根据id查找用户
     @Override
     public User queryUserById(String userId) {

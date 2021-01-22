@@ -34,7 +34,7 @@
 	<body contextmenu="return false;">
 
 		<header class="mui-bar mui-bar-nav title" style="position: fixed;">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left title-color"></a>
+			<a class="mui-icon mui-icon-left-nav mui-pull-left title-color" id="back"></a>
 			<h1 class="mui-title title-color"><b id="chatting-nickname">“ 麻 雀 ” 聊 天</b></h1>
 			<h1 id="friend-details" class="title-color">好友信息</h1>
 		</header>
@@ -61,19 +61,25 @@
 			var friendUserId;
 			var friendNickname;
 			var friendFaceImage;
+
 			mui.ready(function() {
 				mui('.mui-input-row textarea').input();
 			});
 			//动态设置好友信息
 			document.getElementById("friend-details").addEventListener("tap",function(){
-
 				mui.openWindow({
 					url: "friend-details.html",
-					id: "friend-details"+friendUserId,
+					id: "friend-details"+friendUserId+Math.random(),
 					extras: {
 						friendUserId: friendUserId,
+						friendNickname:friendNickname,
+						friendFaceImage:friendFaceImage
 					}
 				});
+			})
+			//设置返回按钮事件
+			document.getElementById("back").addEventListener("tap",function(){
+				mui.openWindow("bird-contact.html","bird-contact.html"+Math.random()+Math.random());
 			})
 			mui.plusReady(function() {
 				//获取全局用户信息
@@ -88,7 +94,6 @@
 				friendUserId = chattingWebview.friendUserId;
 				friendNickname = chattingWebview.friendNickname;
 				friendFaceImage = chattingWebview.friendFaceImage;
-
 				//动态设置标题栏好友昵称
 				document.getElementById("chatting-nickname").innerHTML = friendNickname;
 				//初始化聊天记录

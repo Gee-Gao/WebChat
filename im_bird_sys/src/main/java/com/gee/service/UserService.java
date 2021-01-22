@@ -3,6 +3,7 @@ package com.gee.service;
 import com.gee.netty.ChatContent;
 import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
+import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
 import com.gee.vo.FriendsRequestVo;
 import com.gee.vo.MyFriendsVo;
@@ -46,4 +47,10 @@ public interface UserService {
 
     //获取未签收的消息列表
     List<ChatMsg> getUnReadMsgList(String acceptUserId);
+
+    //修改好友备注
+    void changeRemark(MyFriends myFriends);
+
+    //获取好友备注
+    MyFriends getFriendRemark(MyFriends myFriends);
 }

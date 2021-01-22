@@ -16,4 +16,7 @@ public interface MyFriendsMapper {
     int updateByPrimaryKey(MyFriends record);
 
     MyFriends selectOneByExample(MyFriends mfe);
+
+    //修改好友备注
+    void changeRemark(MyFriends myFriends);
 }

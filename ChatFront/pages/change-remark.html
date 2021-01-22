@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/header.css" rel="stylesheet" />
+		<style type="text/css">
+			html {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 标题栏 -->
+		<header class="mui-bar mui-bar-nav title">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;" id="back"></a>
+			<a id="link_change_remark" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white; font-size: 18px;line-height: 28px;">修改</a>
+			<h1 class="mui-title title-color">修改备注</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-row">
+				<input id="txt_remark" class="mui-input-speech mui-input-clear" placeholder="修改备注" type="text">
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var remark;
+			var friendUserId;
+			var friendNickname;
+			var friendFaceImage;
+			var myUserId;
+			//设置返回按钮事件
+			document.getElementById("back").addEventListener("tap", function() {
+				mui.openWindow({
+					url: "friend-details.html",
+					id: "friend-details.html" + friendUserId + Math.random(),
+					extras: {
+						friendUserId: friendUserId,
+						friendNickname: friendNickname,
+						friendFaceImage: friendFaceImage,
+					}
+				});
+			})
+			mui.plusReady(function() {
+				//获取页面参数
+				var currentWebview = plus.webview.currentWebview();
+				remark = currentWebview.remark;
+				friendUserId = currentWebview.friendUserId;
+				myUserId = currentWebview.myUserId;
+				friendFaceImage = currentWebview.friendFaceImage;
+				friendNickname = currentWebview.friendNickname;
+
+				//获取页面对象
+				var txt_remark = document.getElementById("txt_remark");
+				txt_remark.value = remark;
+				//为修改按钮添加事件
+				document.getElementById("link_change_remark").addEventListener("tap", function() {
+					if (app.isNotNull(txt_remark)) {
+						mui.ajax(app.serverUrl + '/user/changeRemark', { //使用之前所存入的ip来进行通信
+							data: {
+								remark: txt_remark.value,
+								myFriendUserId: friendUserId,
+								myUserId: myUserId
+							},
+							type: 'post', //HTTP请求类型
+							timeout: 5000, //超时时间设置为5秒；
+							success: function(data) {
+								app.showToast("修改成功");
+								mui.ajax(app.serverUrl + "user/myFriends?userId=" + myUserId, {
+									timeout: 10000, //超时时间设置为10秒；
+									success: function(data) {
+										if (data.status == 200) {
+											var contactList = data.data;
+											//将好友列表存入本地缓存中
+											app.setContactList(contactList);
+											var contectWebview = plus.webview.getWebviewById("bird-contact.html");
+											contectWebview.evalJS("renderContactPage()");
+											var chatlistWebview = plus.webview.getWebviewById("bird-chatlist.html");
+											chatlistWebview.evalJS("loadingChatSnapshot()");
+											setTimeout(function() {
+												mui.openWindow("index.html", "index.html");
+											}, 200)
+										}
+									}
+								});
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+								mui(".mui-btn-green").button('reset'); //取消loading效果
+								if (textStatus == "timeout") {
+									mui.toast("连接超时"); //超过十秒报错
+								} else if (textStatus == "error") {
+									mui.toast("连接出错");
+								}
+							}
+						});
+					} else {
+						app.showToast("备注不能为空", "error")
+					}
+
+				})
+			})
+		</script>
+	</body>
+</html>
