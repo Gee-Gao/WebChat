@@ -135,7 +135,7 @@
 					if (msg_text_content.length == 0) {
 						return;
 					}
-					sendMsg(app.imgServerUrl + me.faceImage, msg_text_content);
+					sendMsg(me.faceImage, msg_text_content);
 					//清空消息文本框中的内容
 					msg_text.value = "";
 					//发送消息完毕之后，把发送按钮的颜色改为灰色
@@ -168,7 +168,7 @@
 					if (singleMsg.flag == 1) {
 						chatHtml += '<div class="me_lists">' +
 								'<div class="header_img">' +
-								'<img src="' + app.imgServerUrl + myFaceImg + '" width="40px" height="40px" />' +
+								'<img src="' + myFaceImg + '" width="40px" height="40px" />' +
 								'</div>' +
 								'<div class="msg-wrapper left">' +
 								'<p class="msg-right-green" style="text-align: left;">' + singleMsg.msg + '</p>' +
@@ -177,7 +177,7 @@
 					} else {
 						chatHtml += '<div class="friend_lists">' +
 								'<div class="header_img">' +
-								'<img src="' + app.imgServerUrl + friendFaceImage + '" width="40px" height="40px" />' +
+								'<img src="' + friendFaceImage + '" width="40px" height="40px" />' +
 								'</div>' +
 								'<div class="msg-wrapper right">' +
 								'<p class="msg-left-white">' + singleMsg.msg + '</p>' +
@@ -214,7 +214,7 @@
 			function receiveMsg(msg) {
 				var msgHtml = '<div class="friend_lists">' +
 						'<div class="header_img">' +
-						'<img src="' + app.imgServerUrl + friendFaceImage + '" width="40px" height="40px" />' +
+						'<img src="' + friendFaceImage + '" width="40px" height="40px" />' +
 						'</div>' +
 						'<div class="msg-wrapper right">' +
 						'<p class="msg-left-white">' + msg + '</p>' +

@@ -6,6 +6,11 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.css" rel="stylesheet" />
 		<link href="../css/header.css" rel="stylesheet" />
+		<style>
+			html {
+				touch-action: none;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -82,7 +87,7 @@
 					var faceImage = user.faceImageBig;
 
 					var dtast = plus.downloader.createDownload(
-							app.imgServerUrl + faceImage,
+							faceImage,
 							{},
 							function(downloadFile, status) {
 
@@ -111,9 +116,9 @@
 				var img_my_face = document.getElementById("img_myface");
 
 				if(user != null) {
-					var faceImage = user.faceImageBig;
+					var faceImage = user.faceImage;
 					if(app.isNotNull(faceImage)) {
-						img_my_face.src = app.imgServerUrl + faceImage;
+						img_my_face.src = faceImage;
 					}
 				}
 			}

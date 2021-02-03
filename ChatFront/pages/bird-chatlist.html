@@ -90,7 +90,7 @@
 				function renderFriendRequest(friend) {
 					html = '<li class="btnOper mui-table-view-cell mui-media">' +
 							'<a href="javascript:;">' +
-							'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.sendFaceImage + '">' +
+							'<img class="mui-media-object mui-pull-left" src="' + friend.sendFaceImage + '">' +
 							'<span class="mui-pull-right">' +
 							'<button type="button" class="ignoreRequest mui-btn mui-btn-grey" friendId="' + friend.sendUserId +
 							'" style="padding: 5px 10px;margin-right: 5px;">忽略</button>' +
@@ -136,7 +136,7 @@
 					//打开聊天页面
 					mui.openWindow({
 						url: "bird-chatting.html",
-						id: "bird-chatting" + friendUserId+Math.random(), //每个好友的聊天页面都是一一对应的
+						id: "bird-chatting" + friendUserId + Math.random(), //每个好友的聊天页面都是一一对应的
 						extras: {
 							friendUserId: friendUserId,
 							friendNickname: friendNickname,
@@ -285,7 +285,7 @@
 				var ul_chatSnapshot = document.getElementById("ul_chatSnapshot");
 				ul_chatSnapshot.innerHTML = "";
 				var chatItemHtml = "";
-				for (var i = 0; i < chatSnapshotList.length-1; i++) {
+				for (var i = 0; i < chatSnapshotList.length; i++) {
 					var chatItem = chatSnapshotList[i];
 					var friendId = chatItem.friendId;
 					//根据friendId  从本地联系人列表的缓存中获取相关的信息
@@ -299,26 +299,26 @@
 						readHtmlAfter = '</span>';
 					}
 
-					if(friend.remark==null){
+					if (friend.remark == null) {
 						chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.friendNickname +
 								'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
 								'<div class="mui-slider-right mui-disabled">' +
 								'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
 								'</div>' +
 								'<div class="mui-slider-handle mui-media-body">' +
-								'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
+								'<img class="mui-media-object mui-pull-left" src="' + friend.friendFaceImage + '" />' +
 								readHtmlBefore + friend.friendNickname + readHtmlAfter +
 								'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
 								'</div>' +
 								'</li>';
-					}else{
+					} else {
 						chatItemHtml = '<li  friendUserId="' + friendId + '" friendNickname="' + friend.remark +
 								'" friendFaceImage="' + friend.friendFaceImage + '" class="chat-with-friend mui-table-view-cell mui-media">' +
 								'<div class="mui-slider-right mui-disabled">' +
 								'<a id="link_delChatRecord" friendUserId="' + friendId + '" class="mui-btn mui-btn-red">删除</a>' +
 								'</div>' +
 								'<div class="mui-slider-handle mui-media-body">' +
-								'<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.friendFaceImage + '" />' +
+								'<img class="mui-media-object mui-pull-left" src="' + friend.friendFaceImage + '" />' +
 								readHtmlBefore + friend.remark + readHtmlAfter +
 								'<p class="mui-ellipsis">' + chatItem.msg + '</p>' +
 								'</div>' +

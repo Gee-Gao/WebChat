@@ -10,6 +10,7 @@ import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
+import com.gee.service.OssService;
 import com.gee.service.UserService;
 import com.gee.utils.*;
 import com.gee.vo.UserVo;
@@ -32,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Resource
     private FastDFSClient fastDFSClient;
+    @Resource
+    private OssService ossService;
 
     //获取好友备注
     @GetMapping("getFriendRemark")
@@ -197,19 +200,15 @@ public class UserController {
         //调用FileUtils将userFacePath转为文件对象
         FileUtils.base64ToFile(userFacePath, faceData);
         MultipartFile file = FileUtils.fileToMultipart(userFacePath);
-
         //获取fastdfs上传图片的路径
-        String url = fastDFSClient.uploadBase64(file);
-        String thump = "_150x150.";
-        String[] split = url.split("\\.");
+        // String url = fastDFSClient.uploadBase64(file);
+        String url = ossService.uploadFileAvatar(file);
 
-        String thumpUrl = split[0] + thump + split[1];
 
         //更新用户头像
         User user = new User();
-        user.setFaceImage(thumpUrl);
+        user.setFaceImage(url);
         user.setId(userBo.getUserId());
-        user.setFaceImageBig(url);
         User result = userService.updateUserInfo(user);
         return IWdzlJSONResult.ok(result);
     }
@@ -232,8 +231,7 @@ public class UserController {
             }
             user.setUsername(user.getUsername().trim());
             user.setNickname("麻雀用户: " + stringBuilder.toString());
-            user.setFaceImage("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268_150x150.png");
-            user.setFaceImageBig("M00/00/00/rBGOWF_6cqSAa3LvAAbsRdJj-KE268.png");
+            user.setFaceImage("https://gee-edu.oss-cn-beijing.aliyuncs.com/webChat/3ba5f6bb20e24c14a50517f82f4c0143.png");
             user.setPassword(MD5Utils.getPwd(user.getPassword()));
             userResult = userService.insert(user);
         }

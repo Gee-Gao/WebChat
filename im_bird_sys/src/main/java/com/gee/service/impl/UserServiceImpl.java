@@ -11,6 +11,7 @@ import com.gee.pojo.ChatMsg;
 import com.gee.pojo.FriendsRequest;
 import com.gee.pojo.MyFriends;
 import com.gee.pojo.User;
+import com.gee.service.OssService;
 import com.gee.service.UserService;
 import com.gee.utils.*;
 import com.gee.vo.FriendsRequestVo;
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +36,8 @@ public class UserServiceImpl implements UserService {
     private FastDFSClient fastDFSClient;
     @Resource
     private MyFriendsMapper myFriendsMapper;
+    @Resource
+    private OssService ossService;
     @Resource
     private Sid sid;
     @Resource
@@ -202,8 +204,8 @@ public class UserServiceImpl implements UserService {
         MultipartFile qrcodeFile = FileUtils.fileToMultipart(qrCodePath);
         String qrcodeUrl = null;
         try {
-            qrcodeUrl = fastDFSClient.uploadQRCode(qrcodeFile);
-        } catch (IOException e) {
+            qrcodeUrl = ossService.uploadFileAvatar(qrcodeFile);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         user.setQrcode(qrcodeUrl);

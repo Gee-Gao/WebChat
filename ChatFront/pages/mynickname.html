@@ -69,13 +69,13 @@
 							if (data.status == 200) { //若服务器中成功返回了非空的数据,则表明了账户与密码验证已经成功
 								var userInfo = data.data; //获取json对象中的用户对象
 								app.setUserGlobalInfo(userInfo);
-								
+
 								//触发另外一个Webview自定义事件，更新最新用户信息
 								var myWebview = plus.webview.getWebviewById("bird-me.html");
 								mui.fire(myWebview,'refresh')
 								plus.nativeUI.closeWaiting();
 								mui.back();
-								
+
 								mui.openWindow({
 									url: 'index.html',
 									id: 'index'

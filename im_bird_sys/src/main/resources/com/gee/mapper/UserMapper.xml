@@ -12,7 +12,7 @@
     <result column="cid" property="cid" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, username, password, face_image, face_image_big, nickname, qrcode, cid
+    id, username, password, face_image, nickname, qrcode, cid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -34,10 +34,10 @@
   </delete>
   <insert id="insert" parameterType="com.gee.pojo.User" >
     insert into t_users (id, username, password, 
-      face_image, face_image_big, nickname, 
+      face_image, nickname,
       qrcode, cid)
     values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{faceImage,jdbcType=VARCHAR}, #{faceImageBig,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
+      #{faceImage,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
       #{qrcode,jdbcType=VARCHAR}, #{cid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.gee.pojo.User" >
@@ -54,9 +54,6 @@
       </if>
       <if test="faceImage != null" >
         face_image,
-      </if>
-      <if test="faceImageBig != null" >
-        face_image_big,
       </if>
       <if test="nickname != null" >
         nickname,
@@ -81,9 +78,6 @@
       <if test="faceImage != null" >
         #{faceImage,jdbcType=VARCHAR},
       </if>
-      <if test="faceImageBig != null" >
-        #{faceImageBig,jdbcType=VARCHAR},
-      </if>
       <if test="nickname != null" >
         #{nickname,jdbcType=VARCHAR},
       </if>
@@ -107,9 +101,6 @@
       <if test="faceImage != null" >
         face_image = #{faceImage,jdbcType=VARCHAR},
       </if>
-      <if test="faceImageBig != null" >
-        face_image_big = #{faceImageBig,jdbcType=VARCHAR},
-      </if>
       <if test="nickname != null" >
         nickname = #{nickname,jdbcType=VARCHAR},
       </if>
@@ -127,7 +118,6 @@
     set username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       face_image = #{faceImage,jdbcType=VARCHAR},
-      face_image_big = #{faceImageBig,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
       qrcode = #{qrcode,jdbcType=VARCHAR},
       cid = #{cid,jdbcType=VARCHAR}

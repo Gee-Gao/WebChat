@@ -7,8 +7,6 @@ public class UserVo {
 
     private String faceImage;
 
-    private String faceImageBig;
-
     private String nickname;
 
     private String qrcode;
@@ -35,14 +33,6 @@ public class UserVo {
 
     public void setFaceImage(String faceImage) {
         this.faceImage = faceImage;
-    }
-
-    public String getFaceImageBig() {
-        return faceImageBig;
-    }
-
-    public void setFaceImageBig(String faceImageBig) {
-        this.faceImageBig = faceImageBig;
     }
 
     public String getNickname() {

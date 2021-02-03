@@ -1,20 +1,13 @@
 package com.gee.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @Service
 public class FileUtils {
@@ -118,7 +111,7 @@ public class FileUtils {
 			// File转换成MutipartFile
 			File file = new File(filePath);
 			FileInputStream inputStream = new FileInputStream(file);
-			MultipartFile multipartFile = new MockMultipartFile(file.getName(), "png", "image/png", inputStream);
+			MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image/png", inputStream);
 			return multipartFile;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -9,7 +9,6 @@ public class User {
 
     private String faceImage;
 
-    private String faceImageBig;
 
     private String nickname;
 
@@ -49,13 +48,6 @@ public class User {
         this.faceImage = faceImage;
     }
 
-    public String getFaceImageBig() {
-        return faceImageBig;
-    }
-
-    public void setFaceImageBig(String faceImageBig) {
-        this.faceImageBig = faceImageBig;
-    }
 
     public String getNickname() {
         return nickname;

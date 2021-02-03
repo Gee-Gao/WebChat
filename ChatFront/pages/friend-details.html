@@ -108,7 +108,7 @@
 					timeout: 10000, //超时时间设置为10秒；
 					success: function(data) {
 						if (data.status == 200) {
-							document.getElementById("img_my_face").src = app.imgServerUrl + data.data.faceImage;;
+							document.getElementById("img_my_face").src = data.data.faceImage;;
 							document.getElementById("span_nickname").innerHTML = data.data.nickname;
 							document.getElementById("span_username").innerHTML = data.data.username;
 							//获取最新的备注

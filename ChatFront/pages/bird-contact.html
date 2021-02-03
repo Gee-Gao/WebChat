@@ -214,21 +214,22 @@
 						//循环遍历当前组下的好友列表
 						for (var j = 0; j < contactArray.length; j++) {
 							//如果没有备注
-							if(contactArray[j].remark==null){
+							if (contactArray[j].remark == null) {
 								friendHtml += '<li friendUserId="' + contactArray[j].friendUserId + '" friendNickname="' + contactArray[j].friendNickname +
 										'" friendFaceImage="' + contactArray[j].friendFaceImage +
 										'" class="chat-with-friend mui-media mui-table-view-cell mui-indexed-list-item">' +
-										'<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="' + app.imgServerUrl +
-										contactArray[j].friendFaceImage + '" />' +
+										'<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="' +
+										contactArray[j].friendFaceImage +
+										'" />' +
 										'<div class="mui-media-body" style="line-height: 35px;">' + contactArray[j].friendNickname + '</div>' +
 										'</li>';
 							}
 							//如果有备注
-							else{
+							else {
 								friendHtml += '<li friendUserId="' + contactArray[j].friendUserId + '" friendNickname="' + contactArray[j].remark +
 										'" friendFaceImage="' + contactArray[j].friendFaceImage +
 										'" class="chat-with-friend mui-media mui-table-view-cell mui-indexed-list-item">' +
-										'<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="' + app.imgServerUrl +
+										'<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="' +
 										contactArray[j].friendFaceImage + '" />' +
 										'<div class="mui-media-body" style="line-height: 35px;">' + contactArray[j].remark + '</div>' +
 										'</li>';
@@ -248,7 +249,7 @@
 					var friendFaceImage = this.getAttribute("friendFaceImage");
 					mui.openWindow({
 						url: "bird-chatting.html",
-						id: "bird-chatting"+friendUserId+Math.random(),
+						id: "bird-chatting" + friendUserId + Math.random(),
 						extras: {
 							friendUserId: friendUserId,
 							friendNickname: friendNickname,

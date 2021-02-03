@@ -26,7 +26,7 @@
 					</a>
 				</li>
 			</ul>
-		
+
 			<ul class="mui-table-view" style="margin-top: 10px;">
 				<li id="li_add_frends" class="mui-table-view-cell mui-media">
 					<a href="javascript:;">
@@ -36,7 +36,7 @@
 						</p>
 					</a>
 				</li>
-				
+
 				<li id="li_scanme" class="mui-table-view-cell mui-media">
 					<a href="javascript:;">
 						<img class="mui-media-object mui-pull-left" src="../images/scanscan.png" style="max-width: 25px; height: 25px;">
@@ -54,12 +54,12 @@
 			mui.init();
 
 			mui.plusReady(function () {
-			    //添加好友
+				//添加好友
 				var li_add_frends = document.getElementById("li_add_frends");
 				li_add_frends.addEventListener("tap",function(){
 					mui.openWindow("searchFriends.html","searchFriends.html")
 				});
-				
+
 				//扫一扫
 				var li_scanme = document.getElementById("li_scanme");
 				li_scanme.addEventListener("tap",function(){
